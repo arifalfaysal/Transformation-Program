@@ -9,15 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background: #0B0B0F;
-            --surface-primary: #111115;
-            --surface-secondary: #1C1C22;
-            --primary: #8A63D2;
-            --primary-light: #A374FF;
+            --background: #101114;
+            --surface-primary: #181A1E;
+            --surface-secondary: #22252A;
+            --primary: #FF4400; /* Energetic Orange */
+            --primary-light: #FF6933;
             --text-primary: #F0F0F5;
             --text-secondary: #A0A0B0;
             --text-tertiary: #6B6B7B;
-            --border-primary: #2A2A30;
+            --border-primary: #2A2D33;
             --shadow-color: rgba(0, 0, 0, 0.5);
         }
 
@@ -93,7 +93,7 @@
         .phase-btn.active {
             color: var(--text-primary);
             background-color: var(--primary);
-            box-shadow: 0 4px 15px rgba(138, 99, 210, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
         }
         
         .main-content {
@@ -181,11 +181,19 @@
             padding: 1.5rem;
             margin-bottom: 1rem;
             transition: border-color 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
         }
         
         .exercise:hover {
-            border-color: var(--border-secondary);
+            border-color: var(--surface-secondary);
             background-color: var(--surface-secondary);
+        }
+
+        .exercise-info {
+            flex-grow: 1;
         }
 
         .exercise-header {
@@ -225,6 +233,32 @@
             font-size: 1rem;
         }
 
+        .checkbox-container {
+            flex-shrink: 0;
+        }
+
+        .checkbox {
+            width: 28px;
+            height: 28px;
+            background-color: var(--surface-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox.checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox.checked svg {
+            stroke: var(--background);
+        }
+
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -252,6 +286,44 @@
             font-size: 0.95rem;
         }
 
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 1rem auto 1rem;
+            position: relative;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+
+        .progress-ring-bg {
+            stroke: var(--surface-secondary);
+        }
+
+        .progress-ring-fill {
+            stroke: var(--primary);
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
         .week-controls {
             display: flex;
             align-items: center;
@@ -274,7 +346,7 @@
             transition: all 0.2s ease;
         }
 
-        .week-btn:hover {
+        .week-btn:hover:not(:disabled) {
             background-color: var(--primary);
             border-color: var(--primary);
         }
@@ -306,11 +378,6 @@
             }
             .controls {
                 flex-direction: column;
-            }
-            .exercise-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
             }
         }
 
@@ -349,6 +416,16 @@
                 </div>
             </div>
             <div class="sidebar">
+                <div class="info-card">
+                    <h3>Weekly Progress</h3>
+                    <div class="progress-ring">
+                        <svg width="120" height="120">
+                            <circle class="progress-ring-circle progress-ring-bg" cx="60" cy="60" r="50"></circle>
+                            <circle class="progress-ring-circle progress-ring-fill" cx="60" cy="60" r="50" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                </div>
                 <div class="info-card">
                     <h3 id="phaseTitle">Phase 1: Foundation</h3>
                     <p id="phaseDescription">Focus on proper form, controlled movements, and building a solid foundation. Emphasis on slow eccentrics and mind-muscle connection.</p>
@@ -518,10 +595,13 @@ const phaseInfo = {
     3: { title: "Phase 3: Definition & Strength", description: "Weeks 9-12: Focus shifts to increasing strength with lower reps and heavier weights, while adding conditioning to improve definition." }
 };
 
+// --- STATE ---
 let currentPhase = 1;
 let currentWeek = 1;
 let currentDay = 1;
+let completedExercises = {}; // This will store the completion state
 
+// --- DOM ELEMENTS ---
 const phaseButtons = document.querySelectorAll('.phase-btn');
 const dayTabs = document.querySelectorAll('.day-tab');
 const workoutContent = document.getElementById('workoutContent');
@@ -530,7 +610,12 @@ const prevWeekBtn = document.getElementById('prevWeek');
 const nextWeekBtn = document.getElementById('nextWeek');
 const phaseTitle = document.getElementById('phaseTitle');
 const phaseDescription = document.getElementById('phaseDescription');
+const progressCircle = document.getElementById('progressCircle');
+const progressText = document.getElementById('progressText');
 
+// --- FUNCTIONS ---
+
+// Render the current day's workout
 function renderWorkout() {
     const workout = workoutData[currentPhase]?.[currentDay];
     if (!workout) {
@@ -539,19 +624,33 @@ function renderWorkout() {
     }
 
     const warmupHtml = workout.warmup.map(ex => `<li>${ex}</li>`).join('');
-    const exercisesHtml = workout.exercises.map(ex => `
-        <div class="exercise">
-            <div class="exercise-header">
-                <span class="exercise-name">${ex.name}</span>
+    const exercisesHtml = workout.exercises.map((ex, index) => {
+        const exerciseId = `w${currentWeek}d${currentDay}e${index}`;
+        const isCompleted = completedExercises[exerciseId] || false;
+        
+        return `
+            <div class="exercise">
+                <div class="exercise-info">
+                    <div class="exercise-header">
+                        <span class="exercise-name">${ex.name}</span>
+                    </div>
+                    <div class="exercise-details">
+                        <span>Sets: <strong>${ex.sets}</strong></span>
+                        <span>Reps: <strong>${ex.reps}</strong></span>
+                        <span>Rest: <strong>${ex.rest}</strong></span>
+                    </div>
+                    <p class="exercise-tip">${ex.tip}</p>
+                </div>
+                <div class="checkbox-container">
+                    <div class="checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${exerciseId}')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
             </div>
-            <div class="exercise-details">
-                <span>Sets: <strong>${ex.sets}</strong></span>
-                <span>Reps: <strong>${ex.reps}</strong></span>
-                <span>Rest: <strong>${ex.rest}</strong></span>
-            </div>
-            <p class="exercise-tip">${ex.tip}</p>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     workoutContent.innerHTML = `
         <h2 class="workout-title">${workout.title}</h2>
@@ -560,8 +659,42 @@ function renderWorkout() {
         <h3 class="section-title">Main Workout</h3>
         <div class="exercises">${exercisesHtml}</div>
     `;
+    updateProgress();
 }
 
+// Handle checking/unchecking an exercise
+function toggleExercise(exerciseId) {
+    completedExercises[exerciseId] = !completedExercises[exerciseId];
+    saveProgress();
+    renderWorkout(); // Re-render to show checked state
+}
+
+// Update the visual progress ring
+function updateProgress() {
+    const totalExercisesForWeek = Object.keys(workoutData[currentPhase] || {}).reduce((total, dayKey) => {
+        return total + (workoutData[currentPhase][dayKey].exercises.length || 0);
+    }, 0);
+
+    if (totalExercisesForWeek === 0) {
+        progressText.textContent = '0%';
+        progressCircle.style.strokeDashoffset = 314;
+        return;
+    }
+
+    const completedThisWeek = Object.keys(completedExercises).filter(key => {
+        return key.startsWith(`w${currentWeek}d`);
+    }).length;
+
+    const progress = Math.round((completedThisWeek / totalExercisesForWeek) * 100);
+    const circumference = 2 * Math.PI * 50; // Radius is 50
+    const offset = circumference - (progress / 100) * circumference;
+    
+    progressCircle.style.strokeDashoffset = offset;
+    progressText.textContent = `${progress}%`;
+}
+
+
+// Update the UI based on the current phase
 function updatePhase(phase) {
     currentPhase = phase;
     phaseButtons.forEach(btn => {
@@ -574,10 +707,10 @@ function updatePhase(phase) {
     renderWorkout();
 }
 
+// Update the UI based on the current week
 function updateWeek(week) {
     currentWeek = week;
     currentWeekSpan.textContent = currentWeek;
-
     prevWeekBtn.disabled = currentWeek === 1;
     nextWeekBtn.disabled = currentWeek === 12;
 
@@ -588,9 +721,26 @@ function updateWeek(week) {
 
     if (newPhase !== currentPhase) {
         updatePhase(newPhase);
+    } else {
+        renderWorkout(); // Re-render for the new week
     }
 }
 
+// --- LOCAL STORAGE ---
+function saveProgress() {
+    // Saves the entire completion object to local storage.
+    localStorage.setItem('workoutAppProgress', JSON.stringify(completedExercises));
+}
+
+function loadProgress() {
+    // Loads progress from local storage on startup.
+    const savedProgress = localStorage.getItem('workoutAppProgress');
+    if (savedProgress) {
+        completedExercises = JSON.parse(savedProgress);
+    }
+}
+
+// --- EVENT LISTENERS ---
 phaseButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const newPhase = parseInt(btn.dataset.phase);
@@ -625,7 +775,8 @@ nextWeekBtn.addEventListener('click', () => {
     }
 });
 
-// Initial Load
+// --- INITIALIZATION ---
+loadProgress();
 updateWeek(1);
 renderWorkout();
 
