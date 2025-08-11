@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence-Based 12-Week Workout Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #0B0B0F;
+            --surface-primary: #111115;
+            --surface-secondary: #1C1C22;
+            --primary: #8A63D2;
+            --primary-light: #A374FF;
+            --text-primary: #F0F0F5;
+            --text-secondary: #A0A0B0;
+            --text-tertiary: #6B6B7B;
+            --border-primary: #2A2A30;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .phase-selector {
+            display: flex;
+            background-color: var(--surface-primary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-primary);
+            padding: 0.25rem;
+        }
+
+        .phase-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .phase-btn.active {
+            color: var(--text-primary);
+            background-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(138, 99, 210, 0.2);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .workout-panel {
+            background-color: var(--surface-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .day-tabs {
+            display: flex;
+            background-color: var(--background);
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .day-tab {
+            flex-grow: 1;
+            padding: 1rem 0;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            top: 1px;
+        }
+        
+        .day-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .workout-content {
+            padding: 2rem;
+        }
+        
+        .workout-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .warmup-list {
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }
+
+        .warmup-list li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .warmup-list li::before {
+            content: '✓';
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+
+        .exercise {
+            background-color: transparent;
+            border: 1px solid var(--border-primary);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .exercise:hover {
+            border-color: var(--border-secondary);
+            background-color: var(--surface-secondary);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .exercise-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .exercise-details {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .exercise-tip {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding-left: 1.75rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .exercise-tip::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 1rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .info-card {
+            background-color: var(--surface-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .info-card p, .info-card div {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .week-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--surface-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        .week-btn {
+            background-color: var(--surface-secondary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .week-btn:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .week-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .week-display {
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .exercise-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Evidence-Based Workout Planner</h1>
+            <p>Your 12-Week Transformation Journey</p>
+        </header>
+
+        <div class="controls">
+            <div class="phase-selector">
+                <button class="phase-btn active" data-phase="1">Phase 1: Foundation</button>
+                <button class="phase-btn" data-phase="2">Phase 2: Hypertrophy</button>
+                <button class="phase-btn" data-phase="3">Phase 3: Definition</button>
+            </div>
+            <div class="week-controls">
+                <button class="week-btn" id="prevWeek">‹</button>
+                <div class="week-display">Week <span id="currentWeek">1</span></div>
+                <button class="week-btn" id="nextWeek">›</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="workout-panel">
+                <div class="day-tabs">
+                    <button class="day-tab active" data-day="1">Upper A</button>
+                    <button class="day-tab" data-day="2">Lower A</button>
+                    <button class="day-tab" data-day="4">Upper B</button>
+                    <button class="day-tab" data-day="5">Lower B</button>
+                </div>
+                <div class="workout-content" id="workoutContent">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="info-card">
+                    <h3 id="phaseTitle">Phase 1: Foundation</h3>
+                    <p id="phaseDescription">Focus on proper form, controlled movements, and building a solid foundation. Emphasis on slow eccentrics and mind-muscle connection.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Training Schedule</h3>
+                    <div><strong>Day 1:</strong> Upper A (Pull Focus + Posture)</div>
+                    <div><strong>Day 2:</strong> Lower A (Posterior Chain + Core)</div>
+                    <div><strong>Day 3:</strong> Rest / Mobility</div>
+                    <div><strong>Day 4:</strong> Upper B (Push + Shoulders)</div>
+                    <div><strong>Day 5:</strong> Lower B (Compound + Conditioning)</div>
+                    <div><strong>Day 6:</strong> Active Recovery</div>
+                    <div><strong>Day 7:</strong> Complete Rest</div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+const workoutData = {
+    1: { // Phase 1: Foundation (Weeks 1-4)
+        1: {
+            title: "Upper A - Pull Focus & Posture",
+            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
+            exercises: [
+                { name: "Assisted Pull-ups/Negatives", sets: "4", reps: "3-6 (3-4s negatives)", rest: "2-3 min", tip: "Progress by reducing assistance or increasing negative duration." },
+                { name: "Single-Arm Dumbbell Row", sets: "4", reps: "8-12 each arm", rest: "90 sec", tip: "Maintain a flat back and pull with your lats, not your arm." },
+                { name: "Inverted Rows (feet elevated)", sets: "3", reps: "8-12", rest: "90 sec", tip: "Pull chest to the bar, keeping your body in a straight line." },
+                { name: "Band Face Pulls", sets: "3", reps: "15-20", rest: "60 sec", tip: "Focus on external rotation and squeezing your rear delts." },
+                { name: "Dumbbell Hammer Curls", sets: "2", reps: "10-15", rest: "60 sec", tip: "Keep your elbows pinned to your sides; avoid swinging." },
+                { name: "Posture Circuit", sets: "2 rounds", reps: "8-10 reps/holds", rest: "60 sec", tip: "Chin tucks: 8-10 holds (5s each), Wall angels: 10 reps, Thoracic extensions: 10 reps." }
+            ]
+        },
+        2: {
+            title: "Lower A - Posterior Chain & Core",
+            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
+            exercises: [
+                { name: "Goblet Squats", sets: "4", reps: "8-12", rest: "2 min", tip: "Keep your chest up and go as deep as your mobility allows." },
+                { name: "Romanian Deadlifts (dumbbells)", sets: "4", reps: "8-12", rest: "2 min", tip: "Focus on the hip hinge. Feel the stretch in your hamstrings." },
+                { name: "Bulgarian Split Squats", sets: "3", reps: "8-10 each leg", rest: "90 sec/leg", tip: "Keep your front foot flat and drive through the heel." },
+                { name: "Single-Leg Glute Bridges", sets: "3", reps: "8-12 each leg", rest: "60 sec", tip: "Squeeze your glutes at the top of the movement." },
+                { name: "Pallof Press (band)", sets: "3", reps: "10-15 each side", rest: "60 sec", tip: "Resist the rotational force from the band. Keep your core tight." },
+                { name: "Plank Progression", sets: "3", reps: "20-40s hold", rest: "60 sec", tip: "Maintain a straight line from your head to your heels. Build up to 60s." }
+            ]
+        },
+        4: {
+            title: "Upper B - Push & Shoulders",
+            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
+            exercises: [
+                { name: "Incline Push-ups", sets: "4", reps: "6-12", rest: "90 sec", tip: "Lower the incline as you get stronger to progress towards standard push-ups." },
+                { name: "Dumbbell Overhead Press", sets: "4", reps: "6-10", rest: "2 min", tip: "Press directly overhead without arching your lower back excessively." },
+                { name: "Dumbbell Lateral Raises", sets: "3", reps: "12-20", rest: "60 sec", tip: "Use a light weight and focus on strict form to isolate the side delts." },
+                { name: "Single-Arm Chest Supported Row", sets: "3", reps: "8-12 each arm", rest: "90 sec", tip: "This balances the pushing work and targets the upper back." },
+                { name: "Overhead Tricep Extension", sets: "3", reps: "8-12", rest: "60 sec", tip: "Keep your elbows close to your head and get a full stretch." },
+                { name: "Band Pull-Aparts", sets: "2", reps: "15-25", rest: "45 sec", tip: "Great for shoulder health and posture. Squeeze shoulder blades together." }
+            ]
+        },
+        5: {
+            title: "Lower B - Compound & Conditioning",
+            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
+            exercises: [
+                { name: "Step-ups (weighted)", sets: "4", reps: "6-10 each leg", rest: "90 sec/leg", tip: "Drive through the heel of your front foot. Add weight if possible." },
+                { name: "Single-Leg Romanian Deadlifts", sets: "3", reps: "8-12 each leg", rest: "90 sec/leg", tip: "A great exercise for balance, stability, and hamstring development." },
+                { name: "Farmer's Carry", sets: "3", reps: "40-60s", rest: "90 sec", tip: "Walk with an upright posture, tight core, and controlled steps." },
+                { name: "High-Rep Goblet Squats", sets: "3", reps: "12-15", rest: "60 sec", tip: "Focus on maintaining form under fatigue for conditioning." },
+                { name: "Hollow Body Hold", sets: "3", reps: "15-30s hold", rest: "60 sec", tip: "Press your lower back into the floor to engage your entire core." }
+            ]
+        }
+    },
+    2: { // Phase 2: Hypertrophy Focus (Weeks 5-8)
+        1: {
+            title: "Upper A - Hypertrophy Focus",
+            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
+            exercises: [
+                { name: "Pull-ups / Assisted Pull-ups", sets: "5", reps: "6-10", rest: "2-3 min", tip: "Aim for full range of motion. Add weight if you can do more than 10 reps." },
+                { name: "Single-Arm Dumbbell Row", sets: "4", reps: "6-12 each arm", rest: "90 sec", tip: "Increase weight from Phase 1. Focus on a powerful contraction." },
+                { name: "Wide-Grip Inverted Rows", sets: "3", reps: "8-12", rest: "90 sec", tip: "A new addition to increase back volume and width." },
+                { name: "Band Face Pulls", sets: "4", reps: "15-20", rest: "60 sec", tip: "Increased volume for rear delt and rotator cuff health." },
+                { name: "Y-T-W Raises", sets: "2", reps: "8 each position", rest: "60 sec", tip: "Excellent for shoulder stability and targeting smaller back muscles." },
+                { name: "Barbell Curls", sets: "3", reps: "8-12", rest: "60 sec", tip: "Classic mass builder for the biceps." }
+            ]
+        },
+        2: {
+            title: "Lower A - Hypertrophy Focus",
+            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
+            exercises: [
+                { name: "Barbell Back Squats", sets: "4", reps: "6-10", rest: "2-3 min", tip: "Progress from Goblet Squats. Focus on depth and control." },
+                { name: "Romanian Deadlifts (barbell)", sets: "4", reps: "6-10", rest: "2 min", tip: "Heavier load than dumbbells. Maintain a flat back." },
+                { name: "Bulgarian Split Squats", sets: "4", reps: "8-12 each leg", rest: "90 sec/leg", tip: "Increased volume to drive hypertrophy." },
+                { name: "Hip Thrusts", sets: "4", reps: "8-12", rest: "90 sec", tip: "Superior glute activation. Drive hips up powerfully." },
+                { name: "Hanging Knee Raises", sets: "3", reps: "10-15", rest: "60 sec", tip: "Focus on tilting your pelvis to engage the lower abs." }
+            ]
+        },
+        4: {
+            title: "Upper B - Hypertrophy Focus",
+            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
+            exercises: [
+                { name: "Standard Push-ups / Dips", sets: "4", reps: "8-15", rest: "90 sec", tip: "Progress from incline. Add weight if you can exceed 15 reps." },
+                { name: "Dumbbell Overhead Press", sets: "4", reps: "6-10", rest: "2 min", tip: "Focus on progressive overload by increasing the weight." },
+                { name: "Dumbbell Lateral Raises", sets: "4", reps: "12-15", rest: "60 sec", tip: "Increased volume for wider shoulders. Control the eccentric." },
+                { name: "Pike Push-ups", sets: "3", reps: "5-8", rest: "90 sec", tip: "Builds shoulder mass and strength for future handstand push-ups." },
+                { name: "Close-Grip Bench Press / Dips", sets: "3", reps: "8-12", rest: "90 sec", tip: "Excellent for triceps mass." }
+            ]
+        },
+        5: {
+            title: "Lower B - Hypertrophy Focus",
+            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
+            exercises: [
+                { name: "Walking Lunges (weighted)", sets: "4", reps: "8-12 each leg", rest: "90 sec", tip: "A great compound movement for overall leg development." },
+                { name: "Leg Press", sets: "4", reps: "10-15", rest: "90 sec", tip: "Allows for heavy weight with less lower back strain." },
+                { name: "Lying Leg Curls", sets: "4", reps: "10-15", rest: "60 sec", tip: "Isolates the hamstrings for complete development." },
+                { name: "Seated Calf Raises", sets: "4", reps: "15-20", rest: "45 sec", tip: "Pause at the top and get a full stretch at the bottom." },
+                { name: "Ab Wheel Rollouts", sets: "3", reps: "8-12", rest: "60 sec", tip: "Advanced core exercise. Go as far as you can with good form." }
+            ]
+        }
+    },
+    3: { // Phase 3: Definition & Strength (Weeks 9-12)
+        1: {
+            title: "Upper A - Definition & Strength",
+            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
+            exercises: [
+                { name: "Weighted Pull-ups", sets: "4", reps: "4-6", rest: "3 min", tip: "Focus on strength. Use a backpack or weight belt." },
+                { name: "Pendlay Rows", sets: "4", reps: "5-8", rest: "2 min", tip: "Explosive and powerful back builder from a dead stop." },
+                { name: "One-Arm Dumbbell Row", sets: "3", reps: "6-8 each arm", rest: "90 sec", tip: "Go heavy while maintaining strict form." },
+                { name: "Rope Face Pulls", sets: "3", reps: "12-15", rest: "60 sec", tip: "Continue building rear delt and upper back thickness." },
+                { name: "Incline Dumbbell Curls", sets: "3", reps: "8-12", rest: "60 sec", tip: "Great stretch and peak contraction for the biceps." }
+            ]
+        },
+        2: {
+            title: "Lower A - Definition & Strength",
+            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
+            exercises: [
+                { name: "Barbell Back Squats", sets: "5", reps: "4-6", rest: "3 min", tip: "Work in a lower rep range to build top-end strength." },
+                { name: "Good Mornings", sets: "3", reps: "8-10", rest: "2 min", tip: "Use light weight. Excellent for posterior chain strength." },
+                { name: "Pistol Squat Progressions", sets: "3", reps: "3-5 each leg", rest: "90 sec/leg", tip: "Build single-leg strength and mobility. Use assistance as needed." },
+                { name: "Weighted Hip Thrusts", sets: "4", reps: "6-8", rest: "90 sec", tip: "Go heavy to build glute strength and power." },
+                { name: "L-Sits / Hanging Leg Raises", sets: "3", reps: "AMRAP or 8-12", rest: "60 sec", tip: "Advanced core work for definition and strength." }
+            ]
+        },
+        4: {
+            title: "Upper B - Definition & Strength",
+            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
+            exercises: [
+                { name: "Weighted Dips / Archer Push-ups", sets: "4", reps: "5-8", rest: "2-3 min", tip: "Focus on building strength in advanced push variations." },
+                { name: "Standing Barbell Overhead Press", sets: "4", reps: "5-8", rest: "2-3 min", tip: "A true test of total body strength and stability." },
+                { name: "Heavy Dumbbell Lateral Raises", sets: "3", reps: "8-10", rest: "60 sec", tip: "Use controlled momentum ('cheating') on the last few reps." },
+                { name: "Landmine Press", sets: "3", reps: "8-10 each arm", rest: "90 sec", tip: "A unique angle for shoulder and upper chest development." },
+                { name: "Skull Crushers", sets: "3", reps: "8-12", rest: "60 sec", tip: "Classic triceps builder. Control the weight to protect your elbows." }
+            ]
+        },
+        5: {
+            title: "Lower B - Definition & Conditioning",
+            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
+            exercises: [
+                { name: "Front Squats", sets: "4", reps: "5-8", rest: "2-3 min", tip: "Develops quad strength and requires significant core stability." },
+                { name: "Kettlebell Swings", sets: "4", reps: "15-20", rest: "90 sec", tip: "Explosive hip hinge for power, conditioning, and glute/hamstring work." },
+                { name: "Farmer's Carry (heavy)", sets: "3", reps: "30-45s", rest: "90 sec", tip: "Use a challenging weight to build grip strength and core stability." },
+                { name: "Assault Bike / Rower Sprints", sets: "5 rounds", reps: "30s on, 30s off", rest: "N/A", tip: "High-Intensity Interval Training (HIIT) for conditioning." },
+                { name: "Dragon Flag Negatives", sets: "3", reps: "3-5", rest: "90 sec", tip: "The ultimate core exercise for definition. Lower as slowly as possible." }
+            ]
+        }
+    }
+};
+
+const phaseInfo = {
+    1: { title: "Phase 1: Foundation", description: "Weeks 1-4: Focus on mastering form, building a mind-muscle connection, and preparing your body for heavier loads. Volume is moderate." },
+    2: { title: "Phase 2: Hypertrophy", description: "Weeks 5-8: The primary goal is muscle growth. Volume and intensity are increased, and more advanced exercise variations are introduced." },
+    3: { title: "Phase 3: Definition & Strength", description: "Weeks 9-12: Focus shifts to increasing strength with lower reps and heavier weights, while adding conditioning to improve definition." }
+};
+
+let currentPhase = 1;
+let currentWeek = 1;
+let currentDay = 1;
+
+const phaseButtons = document.querySelectorAll('.phase-btn');
+const dayTabs = document.querySelectorAll('.day-tab');
+const workoutContent = document.getElementById('workoutContent');
+const currentWeekSpan = document.getElementById('currentWeek');
+const prevWeekBtn = document.getElementById('prevWeek');
+const nextWeekBtn = document.getElementById('nextWeek');
+const phaseTitle = document.getElementById('phaseTitle');
+const phaseDescription = document.getElementById('phaseDescription');
+
+function renderWorkout() {
+    const workout = workoutData[currentPhase]?.[currentDay];
+    if (!workout) {
+        workoutContent.innerHTML = `<p>No workout scheduled for this day.</p>`;
+        return;
+    }
+
+    const warmupHtml = workout.warmup.map(ex => `<li>${ex}</li>`).join('');
+    const exercisesHtml = workout.exercises.map(ex => `
+        <div class="exercise">
+            <div class="exercise-header">
+                <span class="exercise-name">${ex.name}</span>
+            </div>
+            <div class="exercise-details">
+                <span>Sets: <strong>${ex.sets}</strong></span>
+                <span>Reps: <strong>${ex.reps}</strong></span>
+                <span>Rest: <strong>${ex.rest}</strong></span>
+            </div>
+            <p class="exercise-tip">${ex.tip}</p>
+        </div>
+    `).join('');
+
+    workoutContent.innerHTML = `
+        <h2 class="workout-title">${workout.title}</h2>
+        <h3 class="section-title">Warm-up</h3>
+        <ul class="warmup-list">${warmupHtml}</ul>
+        <h3 class="section-title">Main Workout</h3>
+        <div class="exercises">${exercisesHtml}</div>
+    `;
+}
+
+function updatePhase(phase) {
+    currentPhase = phase;
+    phaseButtons.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.phase) === currentPhase);
+    });
+    
+    const phaseData = phaseInfo[currentPhase];
+    phaseTitle.textContent = phaseData.title;
+    phaseDescription.textContent = phaseData.description;
+    renderWorkout();
+}
+
+function updateWeek(week) {
+    currentWeek = week;
+    currentWeekSpan.textContent = currentWeek;
+
+    prevWeekBtn.disabled = currentWeek === 1;
+    nextWeekBtn.disabled = currentWeek === 12;
+
+    let newPhase;
+    if (currentWeek <= 4) newPhase = 1;
+    else if (currentWeek <= 8) newPhase = 2;
+    else newPhase = 3;
+
+    if (newPhase !== currentPhase) {
+        updatePhase(newPhase);
+    }
+}
+
+phaseButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const newPhase = parseInt(btn.dataset.phase);
+        let newWeek;
+        if (newPhase === 1) newWeek = 1;
+        else if (newPhase === 2) newWeek = 5;
+        else newWeek = 9;
+        
+        updateWeek(newWeek);
+        updatePhase(newPhase);
+    });
+});
+
+dayTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        currentDay = parseInt(tab.dataset.day);
+        dayTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderWorkout();
+    });
+});
+
+prevWeekBtn.addEventListener('click', () => {
+    if (currentWeek > 1) {
+        updateWeek(currentWeek - 1);
+    }
+});
+
+nextWeekBtn.addEventListener('click', () => {
+    if (currentWeek < 12) {
+        updateWeek(currentWeek + 1);
+    }
+});
+
+// Initial Load
+updateWeek(1);
+renderWorkout();
+
+</script>
+</body>
+</html>
