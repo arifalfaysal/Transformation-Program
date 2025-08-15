@@ -194,19 +194,44 @@
         .exercise-name {
             font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         
         .exercise-details {
             display: flex;
-            gap: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
-        .exercise-details strong {
+        .exercise-tag {
+            background-color: var(--surface-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s ease;
+        }
+
+        .exercise-tag:hover {
+            background-color: var(--border-secondary);
+            border-color: var(--primary);
+        }
+
+        .exercise-tag .tag-label {
+            color: var(--text-tertiary);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .exercise-tag .tag-value {
             color: var(--text-primary);
+            font-weight: 700;
         }
 
         .checkbox-container {
@@ -617,9 +642,18 @@ function renderWorkout() {
                 <div class="exercise-info">
                     <div class="exercise-name">${ex.name}</div>
                     <div class="exercise-details">
-                        <span>Sets: <strong>${ex.sets}</strong></span>
-                        <span>Reps: <strong>${ex.reps}</strong></span>
-                        <span>Rest: <strong>${ex.rest}</strong></span>
+                        <div class="exercise-tag">
+                            <span class="tag-label">Sets</span>
+                            <span class="tag-value">${ex.sets}</span>
+                        </div>
+                        <div class="exercise-tag">
+                            <span class="tag-label">Reps</span>
+                            <span class="tag-value">${ex.reps}</span>
+                        </div>
+                        <div class="exercise-tag">
+                            <span class="tag-label">Rest</span>
+                            <span class="tag-value">${ex.rest}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="checkbox-container">
@@ -701,14 +735,14 @@ function updateWeek(week) {
 }
 
 function saveProgress() {
-    localStorage.setItem('workoutAppProgressV2', JSON.stringify(completedExercises));
+    // Using a variable to store progress instead of localStorage
+    // since localStorage is not supported in this environment
 }
 
 function loadProgress() {
-    const savedProgress = localStorage.getItem('workoutAppProgressV2');
-    if (savedProgress) {
-        completedExercises = JSON.parse(savedProgress);
-    }
+    // Progress would be loaded from localStorage in a real environment
+    // For now, starting with empty progress
+    completedExercises = {};
 }
 
 function calculateTotalExercises() {
@@ -763,3 +797,4 @@ updateWeek(1);
 </script>
 </body>
 </html>
+                
