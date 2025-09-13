@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grindstone</title>
-    <link rel="icon" type="image/x-icon" href="Fire-Fabicon.svg">
+    <title>Grindstone - Workout Tracker</title>
+    <link rel="icon" type="image/x-icon" href="https://placehold.co/32x32/FF204E/FFFFFF?text=G">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --background: #0D0D0F;
@@ -20,781 +21,417 @@
             --text-tertiary: #5F5F6D;
             --border-primary: #222228;
             --border-secondary: #333339;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --success: #22C55E;
+            --success-glow: rgba(34, 197, 94, 0.2);
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background);
             color: var(--text-primary);
-            font-size: 16px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-            letter-spacing: -1.5px;
-        }
-
-        .header p {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .phase-selector {
-            display: flex;
-            background-color: var(--surface-primary);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-primary);
-            padding: 0.25rem;
-        }
-
-        .phase-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .phase-btn.active {
-            color: #fff;
+        .phase-selector button.active {
             background-color: var(--primary);
-            box-shadow: 0 4px 20px var(--primary-glow);
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
-            gap: 2rem;
-            align-items: start;
-        }
-
-        .workout-panel {
-            background-color: var(--surface-primary);
-            border: 1px solid var(--border-primary);
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-        
-        .day-tabs {
-            display: flex;
-            background-color: var(--surface-primary);
-            border-bottom: 1px solid var(--border-primary);
-        }
-
-        .day-tab {
-            flex-grow: 1;
-            padding: 1.25rem 0;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            transition: color 0.3s ease;
-            border-bottom: 2px solid transparent;
-            position: relative;
-        }
-        
-        .day-tab.active {
             color: var(--text-primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .day-tabs button.active {
             border-bottom-color: var(--primary);
+            color: var(--text-primary);
         }
         
-        .workout-content {
-            padding: 1.5rem 2rem 2rem 2rem;
+        .day-tabs button.day-complete .day-name {
+            color: var(--success);
         }
         
-        .workout-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 2.5rem;
+        .day-tabs button.day-complete .completion-dot {
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success-glow);
         }
 
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .warmup-list {
-            list-style: none;
-            margin-bottom: 3rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.5rem 1rem;
-        }
-
-        .warmup-list li {
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .exercise {
-            background-color: transparent;
+        .exercise-card {
+            background-color: var(--surface-primary);
             border: 1px solid var(--border-primary);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
         }
         
-        .exercise:hover {
+        .exercise-card.visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+
+        .exercise-card.completed {
+            background-color: #1a221f;
+            border-color: #2a3f35;
+        }
+        
+        .exercise-card.completed .exercise-name {
+            text-decoration: line-through;
+            color: var(--text-tertiary);
+        }
+        
+        .exercise-card.rest-day {
             background-color: var(--surface-secondary);
-            border-color: var(--border-secondary);
+            text-align: center;
         }
 
-        .exercise-info {
-            flex-grow: 1;
+        .progress-bar-fg {
+            background-color: var(--primary);
+            transition: width 0.5s ease-in-out;
         }
 
-        .exercise-name {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        
-        .exercise-details {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .exercise-tag {
+        .custom-checkbox {
+            -webkit-appearance: none;
+            appearance: none;
             background-color: var(--surface-secondary);
             border: 1px solid var(--border-secondary);
-            border-radius: 0.5rem;
-            padding: 0.375rem 0.75rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            transition: all 0.2s ease;
-        }
-
-        .exercise-tag:hover {
-            background-color: var(--border-secondary);
-            border-color: var(--primary);
-        }
-
-        .exercise-tag .tag-label {
-            color: var(--text-tertiary);
-            font-weight: 500;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .exercise-tag .tag-value {
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
-        .checkbox-container {
-            flex-shrink: 0;
-        }
-
-        .checkbox {
+            border-radius: 50%;
             width: 24px;
             height: 24px;
-            background-color: var(--surface-secondary);
-            border: 1px solid var(--border-secondary);
-            border-radius: 6px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.2s ease;
+            position: relative;
         }
 
-        .checkbox:hover {
-            border-color: var(--primary);
-        }
-
-        .checkbox.checked {
+        .custom-checkbox:checked {
             background-color: var(--primary);
             border-color: var(--primary);
         }
 
-        .checkbox svg {
-            stroke: var(--background);
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.2s ease;
+        .custom-checkbox:checked::after {
+            content: '✓';
+            font-size: 16px;
+            color: var(--text-primary);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-
-        .checkbox.checked svg {
+        
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        .modal-backdrop.visible {
             opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--surface-primary);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-backdrop.visible .modal-content {
             transform: scale(1);
         }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            position: sticky;
-            top: 2rem;
-        }
-
-        .info-card {
-            background-color: var(--surface-primary);
-            border: 1px solid var(--border-primary);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-
-        .info-card h3 {
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .info-card p, .info-card div {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .progress-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .progress-item:last-child {
-            margin-bottom: 0;
-        }
-        .progress-item span:first-child {
-            font-size: 0.9rem;
-            font-weight: 500;
-            width: 80px;
-        }
-        .progress-bar-container {
-            flex-grow: 1;
-            height: 8px;
-            background-color: var(--surface-secondary);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: var(--primary);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        .progress-item span:last-child {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-
-        .week-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: var(--surface-primary);
-            border: 1px solid var(--border-primary);
-            border-radius: 0.75rem;
-            padding: 0.5rem;
-        }
-
-        .week-btn {
-            background-color: var(--surface-secondary);
-            border: 1px solid var(--border-secondary);
-            color: var(--text-primary);
-            width: 2.5rem;
-            height: 2rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1.25rem;
-            transition: all 0.2s ease;
-        }
-
-        .week-btn:hover:not(:disabled) {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .week-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .week-display {
-            font-weight: 600;
-            font-size: 1rem;
-            min-width: 90px;
-            text-align: center;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            .controls {
-                flex-direction: column;
-            }
-        }
-
     </style>
 </head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>Grindstone Protocol Framework</h1>
-            <p>A science-backed plan to forge strength, power and presence</p>
+<body class="bg-[var(--background)]">
+
+    <div class="container mx-auto max-w-4xl p-4 md:p-6">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight">Grindstone Tracker</h1>
+            <p class="text-[var(--text-secondary)] mt-2">Your 12-Week Minimal Equipment Plan</p>
         </header>
 
-        <div class="controls">
-            <div class="phase-selector">
-                <button class="phase-btn active" data-phase="1">Phase 1</button>
-                <button class="phase-btn" data-phase="2">Phase 2</button>
-                <button class="phase-btn" data-phase="3">Phase 3</button>
+        <!-- Overall Progress -->
+        <div class="mb-8 p-4 bg-[var(--surface-primary)] rounded-xl border border-[var(--border-primary)]">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-bold text-[var(--text-primary)]">Total Progress</h3>
+                <span id="progress-text" class="font-semibold text-[var(--primary)]">0%</span>
             </div>
-            <div class="week-controls">
-                <button class="week-btn" id="prevWeek"><</button>
-                <div class="week-display">Week <span id="currentWeek">1</span></div>
-                <button class="week-btn" id="nextWeek">></button>
+            <div class="w-full h-3 rounded-full bg-[var(--surface-secondary)] overflow-hidden">
+                <div id="progress-bar" class="progress-bar-fg h-full rounded-full" style="width: 0%;"></div>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="workout-panel">
-                <div class="day-tabs">
-                    <button class="day-tab active" data-day="1">Pull & Posture</button>
-                    <button class="day-tab" data-day="2">Posterior & Core</button>
-                    <button class="day-tab" data-day="4">Push & Shoulder</button>
-                    <button class="day-tab" data-day="5">Lower Conditioning</button>
-                </div>
-                <div class="workout-content" id="workoutContent">
-                    <!-- Dynamic content will be loaded here -->
-                </div>
+        <!-- Controls -->
+        <div class="bg-[var(--surface-primary)] p-4 rounded-xl border border-[var(--border-primary)] mb-8">
+            <div class="phase-selector flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2 md:space-x-4 mb-6">
+                <button data-phase="1" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 1 (Wks 1-4)</button>
+                <button data-phase="2" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 2 (Wks 5-8)</button>
+                <button data-phase="3" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 3 (Wks 9-12)</button>
             </div>
-            <div class="sidebar">
-                <div class="info-card">
-                    <h3>Your Progress</h3>
-                    <div class="progress-item">
-                        <span>This Week</span>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="weeklyProgressBar"></div>
-                        </div>
-                        <span id="weeklyProgressText">0%</span>
-                    </div>
-                    <div class="progress-item">
-                        <span>Total Plan</span>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="totalProgressBar"></div>
-                        </div>
-                        <span id="totalProgressText">0%</span>
-                    </div>
+
+            <div class="week-nav flex items-center justify-between mb-6">
+                <button id="prev-week" class="p-3 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--border-primary)] disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center">
+                    <h2 id="week-title" class="text-xl md:text-2xl font-bold">Week 1</h2>
+                    <p id="phase-focus" class="text-[var(--text-secondary)] text-sm">Foundation / Accumulation</p>
                 </div>
-                <div class="info-card">
-                    <h3 id="phaseTitle">Phase 1: Building Foundation</h3>
-                    <p id="phaseDescription">Focus on proper form, controlled movements, and building a solid foundation. Emphasis on slow eccentrics and mind-muscle connection.</p>
-                </div>
+                <button id="next-week" class="p-3 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--border-primary)] disabled:opacity-50 disabled:cursor-not-allowed">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+
+            <div class="day-tabs flex justify-around border-b border-[var(--border-primary)]">
+                <button data-day="0" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Mon</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="1" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Tue</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="2" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Wed</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="3" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Thu</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="4" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Fri</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="5" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Sat</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+                <button data-day="6" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
+                    <span class="day-name">Sun</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
+                </button>
+            </div>
+        </div>
+
+        <main>
+            <div class="flex justify-between items-center mb-4">
+                 <h3 id="day-focus-title" class="text-2xl font-bold"></h3>
+            </div>
+            <div id="workout-container" class="space-y-4"></div>
+        </main>
+        
+        <footer class="text-center mt-12">
+            <button id="reset-btn" class="text-sm text-[var(--text-tertiary)] hover:text-[var(--primary)] transition">Reset Progress</button>
+        </footer>
+    </div>
+    
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-2">Are you sure?</h3>
+            <p class="text-[var(--text-secondary)] mb-6">This will permanently delete all your tracked progress. This action cannot be undone.</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-reset-btn" class="px-4 py-2 rounded-lg bg-[var(--surface-secondary)] hover:bg-[var(--border-primary)] transition font-semibold">Cancel</button>
+                <button id="confirm-reset-btn" class="px-4 py-2 rounded-lg bg-[var(--primary)] hover:opacity-90 transition font-semibold">Yes, Reset</button>
             </div>
         </div>
     </div>
-<script>
-const workoutData = {
-    1: { // Phase 1: Foundation (Weeks 1-4)
-        1: {
-            title: "Pull & Posture Strength",
-            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
-            exercises: [
-                { name: "Assisted Pull-ups/Negatives", sets: "4", reps: "3-6", rest: "2-3 min" },
-                { name: "Single-Arm Dumbbell Row", sets: "4", reps: "8-12 each", rest: "90 sec" },
-                { name: "Inverted Rows (feet elevated)", sets: "3", reps: "8-12", rest: "90 sec" },
-                { name: "Band Face Pulls", sets: "3", reps: "15-20", rest: "60 sec" },
-                { name: "Dumbbell Hammer Curls", sets: "2", reps: "10-15", rest: "60 sec" },
-                { name: "Posture Circuit", sets: "2 rounds", reps: "8-10", rest: "60 sec" }
-            ]
-        },
-        2: {
-            title: "Posterior Power & Core",
-            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
-            exercises: [
-                { name: "Goblet Squats", sets: "4", reps: "8-12", rest: "2 min" },
-                { name: "Romanian Deadlifts (dumbbells)", sets: "4", reps: "8-12", rest: "2 min" },
-                { name: "Bulgarian Split Squats", sets: "3", reps: "8-10 each", rest: "90 sec/leg" },
-                { name: "Single-Leg Glute Bridges", sets: "3", reps: "8-12 each", rest: "60 sec" },
-                { name: "Pallof Press (band)", sets: "3", reps: "10-15 each", rest: "60 sec" },
-                { name: "Plank Progression", sets: "3", reps: "20-40s", rest: "60 sec" }
-            ]
-        },
-        4: {
-            title: "Push & Shoulder Development",
-            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
-            exercises: [
-                { name: "Incline Push-ups", sets: "4", reps: "6-12", rest: "90 sec" },
-                { name: "Dumbbell Overhead Press", sets: "4", reps: "6-10", rest: "2 min" },
-                { name: "Dumbbell Lateral Raises", sets: "3", reps: "12-20", rest: "60 sec" },
-                { name: "Single-Arm Chest Supported Row", sets: "3", reps: "8-12 each", rest: "90 sec" },
-                { name: "Overhead Tricep Extension", sets: "3", reps: "8-12", rest: "60 sec" },
-                { name: "Band Pull-Aparts", sets: "2", reps: "15-25", rest: "45 sec" }
-            ]
-        },
-        5: {
-            title: "Lower Compound & Conditioning",
-            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
-            exercises: [
-                { name: "Step-ups (weighted)", sets: "4", reps: "6-10 each", rest: "90 sec/leg" },
-                { name: "Single-Leg Romanian Deadlifts", sets: "3", reps: "8-12 each", rest: "90 sec/leg" },
-                { name: "Farmer's Carry", sets: "3", reps: "40-60s", rest: "90 sec" },
-                { name: "High-Rep Goblet Squats", sets: "3", reps: "12-15", rest: "60 sec" },
-                { name: "Hollow Body Hold", sets: "3", reps: "15-30s", rest: "60 sec" }
-            ]
-        }
-    },
-    2: { // Phase 2: Hypertrophy Focus (Weeks 5-8)
-        1: {
-            title: "Pull Volume & Posture Control",
-            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
-            exercises: [
-                { name: "Pull-ups / Assisted Pull-ups", sets: "5", reps: "6-10", rest: "2-3 min" },
-                { name: "Single-Arm Dumbbell Row", sets: "4", reps: "6-12 each", rest: "90 sec" },
-                { name: "Wide-Grip Inverted Rows", sets: "3", reps: "8-12", rest: "90 sec" },
-                { name: "Band Face Pulls", sets: "4", reps: "15-20", rest: "60 sec" },
-                { name: "Y-T-W Raises", sets: "2", reps: "8 each", rest: "60 sec" },
-                { name: "Barbell Curls", sets: "3", reps: "8-12", rest: "60 sec" }
-            ]
-        },
-        2: {
-            title: "Posterior Mass & Core Endurance",
-            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
-            exercises: [
-                { name: "Barbell Back Squats", sets: "4", reps: "6-10", rest: "2-3 min" },
-                { name: "Romanian Deadlifts (barbell)", sets: "4", reps: "6-10", rest: "2 min" },
-                { name: "Bulgarian Split Squats", sets: "4", reps: "8-12 each", rest: "90 sec/leg" },
-                { name: "Hip Thrusts", sets: "4", reps: "8-12", rest: "90 sec" },
-                { name: "Hanging Knee Raises", sets: "3", reps: "10-15", rest: "60 sec" }
-            ]
-        },
-        4: {
-            title: "Push Strength & Shoulder Width",
-            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
-            exercises: [
-                { name: "Standard Push-ups / Dips", sets: "4", reps: "8-15", rest: "90 sec" },
-                { name: "Dumbbell Overhead Press", sets: "4", reps: "6-10", rest: "2 min" },
-                { name: "Dumbbell Lateral Raises", sets: "4", reps: "12-15", rest: "60 sec" },
-                { name: "Pike Push-ups", sets: "3", reps: "5-8", rest: "90 sec" },
-                { name: "Close-Grip Bench Press / Dips", sets: "3", reps: "8-12", rest: "90 sec" }
-            ]
-        },
-        5: {
-            title: "Lower Compound Strength & Conditioning",
-            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
-            exercises: [
-                { name: "Walking Lunges (weighted)", sets: "4", reps: "8-12 each", rest: "90 sec" },
-                { name: "Leg Press", sets: "4", reps: "10-15", rest: "90 sec" },
-                { name: "Lying Leg Curls", sets: "4", reps: "10-15", rest: "60 sec" },
-                { name: "Seated Calf Raises", sets: "4", reps: "15-20", rest: "45 sec" },
-                { name: "Ab Wheel Rollouts", sets: "3", reps: "8-12", rest: "60 sec" }
-            ]
-        }
-    },
-    3: { // Phase 3: Definition & Strength (Weeks 9-12)
-        1: {
-            title: "Pull Precision & Posture Mastery",
-            warmup: ["Arm circles: 10 each direction", "Band pull-aparts: 15 reps", "Scapular wall slides: 10 reps", "Cat-cow stretches: 8 reps"],
-            exercises: [
-                { name: "Weighted Pull-ups", sets: "4", reps: "4-6", rest: "3 min" },
-                { name: "Pendlay Rows", sets: "4", reps: "5-8", rest: "2 min" },
-                { name: "One-Arm Dumbbell Row", sets: "3", reps: "6-8 each", rest: "90 sec" },
-                { name: "Rope Face Pulls", sets: "3", reps: "12-15", rest: "60 sec" },
-                { name: "Incline Dumbbell Curls", sets: "3", reps: "8-12", rest: "60 sec" }
-            ]
-        },
-        2: {
-            title: "Posterior Strength & Core Resilience",
-            warmup: ["Hip circles: 10 each direction", "Leg swings: 10 each leg", "Bodyweight squats: 10 reps", "Glute bridges: 15 reps"],
-            exercises: [
-                { name: "Barbell Back Squats", sets: "5", reps: "4-6", rest: "3 min" },
-                { name: "Good Mornings", sets: "3", reps: "8-10", rest: "2 min" },
-                { name: "Pistol Squat Progressions", sets: "3", reps: "3-5 each", rest: "90 sec/leg" },
-                { name: "Weighted Hip Thrusts", sets: "4", reps: "6-8", rest: "90 sec" },
-                { name: "L-Sits / Hanging Leg Raises", sets: "3", reps: "AMRAP", rest: "60 sec" }
-            ]
-        },
-        4: {
-            title: "Push Power & Shoulder Definition",
-            warmup: ["Arm swings: 10 each direction", "Shoulder dislocations (band): 10 reps", "Wall push-ups: 10 reps", "Pike stretches: 8 reps"],
-            exercises: [
-                { name: "Weighted Dips / Archer Push-ups", sets: "4", reps: "5-8", rest: "2-3 min" },
-                { name: "Standing Barbell Overhead Press", sets: "4", reps: "5-8", rest: "2-3 min" },
-                { name: "Heavy Dumbbell Lateral Raises", sets: "3", reps: "8-10", rest: "60 sec" },
-                { name: "Landmine Press", sets: "3", reps: "8-10 each", rest: "90 sec" },
-                { name: "Skull Crushers", sets: "3", reps: "8-12", rest: "60 sec" }
-            ]
-        },
-        5: {
-            title: "Lower Power & Conditioning Peak",
-            warmup: ["Dynamic leg swings: 10 each", "Walking lunges: 10 total", "Hip flexor stretches: 30s each", "Calf raises: 15 reps"],
-            exercises: [
-                { name: "Front Squats", sets: "4", reps: "5-8", rest: "2-3 min" },
-                { name: "Kettlebell Swings", sets: "4", reps: "15-20", rest: "90 sec" },
-                { name: "Farmer's Carry (heavy)", sets: "3", reps: "30-45s", rest: "90 sec" },
-                { name: "Assault Bike / Rower Sprints", sets: "5 rounds", reps: "30/30s", rest: "N/A" },
-                { name: "Dragon Flag Negatives", sets: "3", reps: "3-5", rest: "90 sec" }
-            ]
-        }
-    }
-};
 
-const phaseInfo = {
-    1: { title: "Phase 1: Building Foundation", description: "Weeks 1-4: Focus on mastering form, building a mind-muscle connection, and preparing your body for heavier loads." },
-    2: { title: "Phase 2: Hypertrophy & Growth", description: "Weeks 5-8: The primary goal is muscle growth. Volume and intensity are increased to drive hypertrophy." },
-    3: { title: "Phase 3: Definition & Strength", description: "Weeks 9-12: Focus shifts to increasing strength with heavier weights, while adding conditioning to improve definition." }
-};
 
-// --- STATE ---
-let currentPhase = 1;
-let currentWeek = 1;
-let currentDay = 1;
-let completedExercises = {};
-let totalExercisesInPlan = 0;
+    <script>
+        const workoutData = {
+            "1":{name:"Foundation / Accumulation",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press (5 kg)",sets:"4 × 10–15"},{name:"Inverted Rows (table/towel)",sets:"4 × 8–12"},{name:"Pike Push-Ups",sets:"3 × 8–12"},{name:"Single-Arm DB Row (5 kg)",sets:"3 × 10–12/arm"},{name:"DB Lateral Raise (5 kg)",sets:"3 × 12–15"},{name:"Hollow Body Hold",sets:"3 × 30–40s"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (5 kg)",sets:"4 × 8–12/leg"},{name:"Single-Leg RDL (5 kg)",sets:"4 × 8–12/leg"},{name:"Goblet Squat (5 kg)",sets:"3 × 12–15"},{name:"Hip Thrust / Glute Bridge (DB)",sets:"3 × 12–15"},{name:"Standing Calf Raise",sets:"3 × 15–20"},{name:"Plank",sets:"3 × 40–60s"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Mobility / Stretch",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Incline Push-Ups (feet elevated)",sets:"4 × 8–12"},{name:"DB Shoulder Press (5 kg)",sets:"4 × 8–12"},{name:"DB Fly (floor/standing)",sets:"3 × 12–15"},{name:"Overhead Triceps Extension (5 kg)",sets:"3 × 12–15"},{name:"DB Lateral Raise (5 kg)",sets:"3 × 12–15"},{name:"Push-Ups (AMRAP)",sets:"2 sets"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups / Negatives",sets:"4 × AMRAP"},{name:"Bent-Over DB Row (5 kg)",sets:"4 × 8–12"},{name:"Inverted Rows",sets:"3 × 10–15"},{name:"DB Reverse Fly",sets:"3 × 15–20"},{name:"DB Bicep Curl",sets:"3 × 10–15"},{name:"Face Pulls (band/towel)",sets:"3 × 15–20"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light walk / Active Recovery",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest",sets:"Take it easy"}]}]},
+            "2":{name:"Strength & Hypertrophy",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press (heavy, 2s pause)",sets:"4 × 6–8"},{name:"Pull-Ups (weighted if possible)",sets:"4 × 6–8"},{name:"Pike Push-Ups (feet elevated)",sets:"4 × 6–10"},{name:"DB Lateral Raise (slow eccentric)",sets:"4 × 10–12"},{name:"Hanging Knee Raises",sets:"3 × 12–15"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (heavy)",sets:"4 × 6–8/leg"},{name:"Single-Leg RDL (increased weight)",sets:"4 × 6–8/leg"},{name:"Goblet Squat (pause at bottom)",sets:"4 × 8–10"},{name:"Hip Thrust (heavy, pause top)",sets:"3 × 8–10"},{name:"Plank (with DB on back)",sets:"3 × 30s"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Mobility / Foam Roll",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Decline Push-Ups",sets:"4 × 8–12"},{name:"DB Shoulder Press (seated, heavy)",sets:"4 × 6–8"},{name:"DB Fly (incline if possible)",sets:"3 × 10–12"},{name:"Close-Grip Push-Ups",sets:"3 × AMRAP"},{name:"Upright Row (DBs)",sets:"3 × 10–12"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups / Chin-Ups (alternating grip)",sets:"4 × AMRAP"},{name:"Bent-Over DB Row (4s ecc)",sets:"4 × 8–12"},{name:"Inverted Rows (feet elevated)",sets:"3 × 6–10"},{name:"DB Reverse Fly (pause top)",sets:"4 × 12–20"},{name:"DB Concentration Curl",sets:"3 × 10–12"},{name:"DB Shrugs (hold top 3s)",sets:"3 × 20"},{name:"Bird-Dog",sets:"3 × 10/side"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light walk / Mobility",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest",sets:"Take it easy"}]}]},
+            "3":{name:"Specialization & Peak",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press + Push-Ups (superset)",sets:"4 × 8–12 + AMRAP"},{name:"Inverted Rows + DB Row (superset)",sets:"4 × 8–12 each"},{name:"Pike Push-Ups (cluster: 2–3 mini sets)",sets:"4 × 6–8"},{name:"DB Lateral Raise (21s method: low/mid/full ROM)",sets:"3 × 21"},{name:"Hollow Body Hold (weighted)",sets:"3 × 30s"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (1.5 reps style)",sets:"4 × 8–10/leg"},{name:"Single-Leg RDL + Calf Raise (combo)",sets:"4 × 10 each"},{name:"Goblet Squat (rest-pause final set)",sets:"4 × 12–15"},{name:"Hip Thrust (hold last rep 10s)",sets:"3 × 12–15"},{name:"Side Plank with Hip Dip",sets:"3 × 30s/side"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Yoga / Deep Stretch",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Explosive Push-Ups",sets:"5 × 5"},{name:"DB Push Press",sets:"4 × 6–8"},{name:"DB Fly + Hex Press (superset)",sets:"3 × 10 + 10"},{name:"Triceps Pushdowns (band) or Diamond Push-Ups",sets:"3 × 12–15"},{name:"Arnold Press",sets:"3 × 10–12"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups (Mechanical Drop Set)",sets:"3 × AMRAP each"},{name:"Renegade Row",sets:"4 × 8–10/arm"},{name:"DB Pullover",sets:"3 × 10–12"},{name:"Hammer Curl + Reverse Curl (superset)",sets:"3 × 10 + 10"},{name:"Farmer's Walk (with DBs)",sets:"3 × 45s"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light Cardio / Play",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest & Plan Next Cycle",sets:"Take it easy"}]}]}
+        };
 
-// --- DOM ELEMENTS ---
-const phaseButtons = document.querySelectorAll('.phase-btn');
-const dayTabs = document.querySelectorAll('.day-tab');
-const workoutContent = document.getElementById('workoutContent');
-const currentWeekSpan = document.getElementById('currentWeek');
-const prevWeekBtn = document.getElementById('prevWeek');
-const nextWeekBtn = document.getElementById('nextWeek');
-const phaseTitle = document.getElementById('phaseTitle');
-const phaseDescription = document.getElementById('phaseDescription');
-const weeklyProgressBar = document.getElementById('weeklyProgressBar');
-const weeklyProgressText = document.getElementById('weeklyProgressText');
-const totalProgressBar = document.getElementById('totalProgressBar');
-const totalProgressText = document.getElementById('totalProgressText');
+        const E = {
+            phaseBtns: document.querySelectorAll('.phase-btn'),
+            prevWkBtn: document.getElementById('prev-week'),
+            nextWkBtn: document.getElementById('next-week'),
+            dayTabs: document.querySelectorAll('.day-tab'),
+            wkTitle: document.getElementById('week-title'),
+            phFocus: document.getElementById('phase-focus'),
+            dayFocus: document.getElementById('day-focus-title'),
+            workoutCont: document.getElementById('workout-container'),
+            progBar: document.getElementById('progress-bar'),
+            progText: document.getElementById('progress-text'),
+            resetBtn: document.getElementById('reset-btn'),
+            resetModal: document.getElementById('reset-modal'),
+            cancelReset: document.getElementById('cancel-reset-btn'),
+            confirmReset: document.getElementById('confirm-reset-btn'),
+        };
 
-// --- FUNCTIONS ---
+        let state = {
+            week: 1,
+            day: 0,
+            phase: 1,
+            completed: {},
+            totalExercises: 0,
+        };
 
-function renderWorkout() {
-    const workout = workoutData[currentPhase]?.[currentDay];
-    if (!workout) {
-        workoutContent.innerHTML = `<p>No workout scheduled for this day.</p>`;
-        return;
-    }
+        const getPhaseFromWeek = week => Math.ceil(week / 4);
 
-    const warmupHtml = workout.warmup.map(ex => `<li>${ex}</li>`).join('');
-    const exercisesHtml = workout.exercises.map((ex, index) => {
-        const exerciseId = `w${currentWeek}p${currentPhase}d${currentDay}e${index}`;
-        const isCompleted = completedExercises[exerciseId] || false;
-        
-        return `
-            <div class="exercise">
-                <div class="exercise-info">
-                    <div class="exercise-name">${ex.name}</div>
-                    <div class="exercise-details">
-                        <div class="exercise-tag">
-                            <span class="tag-label">Sets</span>
-                            <span class="tag-value">${ex.sets}</span>
-                        </div>
-                        <div class="exercise-tag">
-                            <span class="tag-label">Reps</span>
-                            <span class="tag-value">${ex.reps}</span>
-                        </div>
-                        <div class="exercise-tag">
-                            <span class="tag-label">Rest</span>
-                            <span class="tag-value">${ex.rest}</span>
-                        </div>
+        function renderWorkout() {
+            const phaseData = workoutData[state.phase];
+            const dayData = phaseData.days[state.day];
+            
+            E.dayFocus.textContent = `${dayData.day} - ${dayData.focus}`;
+            E.workoutCont.innerHTML = '';
+
+            if (!dayData.exercises) return;
+
+            dayData.exercises.forEach((ex, i) => {
+                const exId = `w${state.week}d${state.day}e${i}`;
+                const isDone = state.completed[exId] === true;
+                const isRest = dayData.focus === "Rest";
+
+                const card = document.createElement('div');
+                card.className = `exercise-card flex items-center p-4 rounded-xl shadow-md ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''}`;
+                
+                let content = `
+                    <div class="flex-1 ${isRest ? '' : 'mr-4'}">
+                        <h4 class="exercise-name font-bold text-lg text-[var(--text-primary)]">${ex.name}</h4>
+                        <p class="text-sm text-[var(--text-secondary)]">${ex.sets}</p>
                     </div>
-                </div>
-                <div class="checkbox-container">
-                    <div class="checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleExercise('${exerciseId}')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    workoutContent.innerHTML = `
-        <h2 class="workout-title">${workout.title}</h2>
-        <h3 class="section-title">Warm-up</h3>
-        <ul class="warmup-list">${warmupHtml}</ul>
-        <h3 class="section-title">Main Workout</h3>
-        <div class="exercises">${exercisesHtml}</div>
-    `;
-    updateProgressDisplays();
-}
-
-function toggleExercise(exerciseId) {
-    completedExercises[exerciseId] = !completedExercises[exerciseId];
-    saveProgress();
-    renderWorkout();
-}
-
-function updateProgressDisplays() {
-    // Weekly Progress
-    const exercisesInCurrentWeek = Object.keys(workoutData[currentPhase] || {}).reduce((total, dayKey) => {
-        return total + (workoutData[currentPhase][dayKey].exercises.length || 0);
-    }, 0);
-    
-    const completedThisWeek = Object.keys(completedExercises).filter(key => {
-        return key.startsWith(`w${currentWeek}p${currentPhase}`);
-    }).length;
-
-    const weeklyPercent = exercisesInCurrentWeek > 0 ? Math.round((completedThisWeek / exercisesInCurrentWeek) * 100) : 0;
-    weeklyProgressBar.style.width = `${weeklyPercent}%`;
-    weeklyProgressText.textContent = `${weeklyPercent}%`;
-
-    // Total Progress
-    const totalCompleted = Object.keys(completedExercises).filter(key => completedExercises[key]).length;
-    const totalPercent = totalExercisesInPlan > 0 ? Math.round((totalCompleted / totalExercisesInPlan) * 100) : 0;
-    totalProgressBar.style.width = `${totalPercent}%`;
-    totalProgressText.textContent = `${totalPercent}%`;
-}
-
-function updatePhase(phase) {
-    currentPhase = phase;
-    phaseButtons.forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.dataset.phase) === currentPhase);
-    });
-    
-    const phaseData = phaseInfo[currentPhase];
-    phaseTitle.textContent = phaseData.title;
-    phaseDescription.textContent = phaseData.description;
-    renderWorkout();
-}
-
-function updateWeek(week) {
-    currentWeek = week;
-    currentWeekSpan.textContent = currentWeek;
-    prevWeekBtn.disabled = currentWeek === 1;
-    nextWeekBtn.disabled = currentWeek === 12;
-
-    let newPhase;
-    if (currentWeek <= 4) newPhase = 1;
-    else if (currentWeek <= 8) newPhase = 2;
-    else newPhase = 3;
-
-    if (newPhase !== currentPhase) {
-        updatePhase(newPhase);
-    } else {
-        renderWorkout();
-    }
-}
-
-function saveProgress() {
-    // Using a variable to store progress instead of localStorage
-    // since localStorage is not supported in this environment
-}
-
-function loadProgress() {
-    // Progress would be loaded from localStorage in a real environment
-    // For now, starting with empty progress
-    completedExercises = {};
-}
-
-function calculateTotalExercises() {
-    let total = 0;
-    for (const phase in workoutData) {
-        for (const day in workoutData[phase]) {
-            total += workoutData[phase][day].exercises.length;
+                `;
+                if (!isRest) {
+                    content += `<div class="flex-shrink-0"><input type="checkbox" data-id="${exId}" class="custom-checkbox" ${isDone ? 'checked' : ''}></div>`;
+                }
+                card.innerHTML = content;
+                E.workoutCont.appendChild(card);
+                
+                setTimeout(() => card.classList.add('visible'), (i + 1) * 50);
+            });
+            
+            E.workoutCont.querySelectorAll('.custom-checkbox').forEach(cb => {
+                cb.addEventListener('change', handleExCompletion);
+            });
         }
-    }
-    totalExercisesInPlan = total;
-}
 
-// --- EVENT LISTENERS ---
-phaseButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const newPhase = parseInt(btn.dataset.phase);
-        let newWeek;
-        if (newPhase === 1) newWeek = 1;
-        else if (newPhase === 2) newWeek = 5;
-        else newWeek = 9;
+        function handleExCompletion(e) {
+            const exId = e.target.dataset.id;
+            state.completed[exId] = e.target.checked;
+            e.target.closest('.exercise-card').classList.toggle('completed', e.target.checked);
+            saveProgress();
+            updateAllProgress();
+        }
+
+        function updateAllProgress() {
+            updateGlobalProgress();
+            updateDayCompletionStatus();
+        }
+
+        function updateGlobalProgress() {
+            const doneCount = Object.values(state.completed).filter(Boolean).length;
+            const pct = state.totalExercises > 0 ? (doneCount / state.totalExercises) * 100 : 0;
+            E.progBar.style.width = `${pct}%`;
+            E.progText.textContent = `${Math.round(pct)}%`;
+        }
+
+        function updateDayCompletionStatus() {
+            E.dayTabs.forEach((tab, dayIndex) => {
+                const dayExercises = workoutData[getPhaseFromWeek(state.week)]?.days[dayIndex]?.exercises;
+                const isRest = workoutData[getPhaseFromWeek(state.week)]?.days[dayIndex]?.focus === "Rest";
+                
+                if (!dayExercises || isRest) {
+                     tab.classList.remove('day-complete');
+                     return;
+                }
+
+                const totalForDay = dayExercises.length;
+                let completedForDay = 0;
+                for(let i = 0; i < totalForDay; i++) {
+                    const exId = `w${state.week}d${dayIndex}e${i}`;
+                    if (state.completed[exId]) {
+                        completedForDay++;
+                    }
+                }
+                tab.classList.toggle('day-complete', completedForDay === totalForDay);
+            });
+        }
+
+        function updateUI() {
+            state.phase = getPhaseFromWeek(state.week);
+            E.wkTitle.textContent = `Week ${state.week}`;
+            E.phFocus.textContent = workoutData[state.phase].name;
+            E.phaseBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.phase) === state.phase));
+            E.dayTabs.forEach(t => t.classList.toggle('active', parseInt(t.dataset.day) === state.day));
+            E.prevWkBtn.disabled = state.week === 1;
+            E.nextWkBtn.disabled = state.week === 12;
+            renderWorkout();
+            updateAllProgress();
+        }
+
+        function changeWeek(newWeek) {
+            if (newWeek < 1 || newWeek > 12) return;
+            state.week = newWeek;
+            updateUI();
+        }
+
+        function changeDay(newDay) {
+            state.day = newDay;
+            updateUI();
+        }
+
+        function saveProgress() {
+            try { localStorage.setItem('grindstoneProgress', JSON.stringify(state.completed)); }
+            catch (e) { console.warn("Local storage is unavailable."); }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('grindstoneProgress');
+                state.completed = saved ? JSON.parse(saved) : {};
+            } catch (e) {
+                console.warn("Could not load progress from local storage.");
+                state.completed = {};
+            }
+        }
+
+        function calculateTotalExercises() {
+            state.totalExercises = 0;
+            for (let week = 1; week <= 12; week++) {
+                const phase = workoutData[getPhaseFromWeek(week)];
+                phase.days.forEach(day => {
+                    if (day.focus !== "Rest") {
+                        state.totalExercises += day.exercises.length;
+                    }
+                });
+            }
+        }
         
-        updateWeek(newWeek);
-    });
-});
+        function resetProgress() {
+            state.completed = {};
+            saveProgress();
+            updateUI();
+            E.resetModal.classList.remove('visible');
+        }
 
-dayTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        currentDay = parseInt(tab.dataset.day);
-        dayTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderWorkout();
-    });
-});
+        function setupEventListeners() {
+            E.phaseBtns.forEach(btn => btn.addEventListener('click', () => changeWeek([1, 5, 9][parseInt(btn.dataset.phase) - 1])));
+            E.dayTabs.forEach(tab => tab.addEventListener('click', () => changeDay(parseInt(tab.dataset.day))));
+            E.prevWkBtn.addEventListener('click', () => changeWeek(state.week - 1));
+            E.nextWkBtn.addEventListener('click', () => changeWeek(state.week + 1));
+            
+            E.resetBtn.addEventListener('click', () => E.resetModal.classList.add('visible'));
+            E.cancelReset.addEventListener('click', () => E.resetModal.classList.remove('visible'));
+            E.resetModal.addEventListener('click', (e) => { if (e.target === E.resetModal) E.resetModal.classList.remove('visible'); });
+            E.confirmReset.addEventListener('click', resetProgress);
+        }
 
-prevWeekBtn.addEventListener('click', () => {
-    if (currentWeek > 1) {
-        updateWeek(currentWeek - 1);
-    }
-});
+        function init() {
+            const today = new Date().getDay();
+            state.day = today === 0 ? 6 : today - 1; // 0=Sun -> 6, 1=Mon -> 0, etc.
 
-nextWeekBtn.addEventListener('click', () => {
-    if (currentWeek < 12) {
-        updateWeek(currentWeek + 1);
-    }
-});
+            loadProgress();
+            calculateTotalExercises();
+            setupEventListeners();
+            updateUI();
+        }
 
-// --- INITIALIZATION ---
-loadProgress();
-calculateTotalExercises();
-updateWeek(1);
-
-</script>
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
-                
