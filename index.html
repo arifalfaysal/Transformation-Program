@@ -3,51 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grindstone - Workout Tracker</title>
-    <link rel="icon" type="image/x-icon" href="https://placehold.co/32x32/FF204E/FFFFFF?text=G">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Recomp Tracker | IGNITE</title>
+    <link rel="icon" type="image/x-icon" href="https://placehold.co/32x32/DC2626/FFFFFF?text=R">
+    <link rel="stylesheet" href="inter.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --background: #0D0D0F;
-            --surface-primary: #131316;
-            --surface-secondary: #1A1A1E;
-            --primary: #FF204E;
-            --primary-glow: rgba(255, 32, 78, 0.2);
-            --text-primary: #F0F0F5;
-            --text-secondary: #A0A0B0;
+            --background: #000000;
+            --surface-primary: #121212;
+            --surface-secondary: #1A1A1A;
+            --primary: #FF1F31; /* Intense Red */
+            --primary-glow: rgba(220, 38, 38, 0.3);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
             --text-tertiary: #5F5F6D;
-            --border-primary: #222228;
-            --border-secondary: #333339;
-            --success: #22C55E;
-            --success-glow: rgba(34, 197, 94, 0.2);
+            --border-primary: #2A2A2A;
+            --border-secondary: #3D3D3D;
+            --success: #00FF7F; /* Spring Green */
+            --success-glow: rgba(0, 255, 127, 0.2);
         }
 
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'InterDisplay', sans-serif;
             background-color: var(--background);
             color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .phase-selector button.active {
-            background-color: var(--primary);
-            color: var(--text-primary);
-            box-shadow: 0 0 15px var(--primary-glow);
+            background-image: radial-gradient(circle at top, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 25%);
+            background-attachment: fixed;
         }
 
         .day-tabs button.active {
+            color: var(--primary);
             border-bottom-color: var(--primary);
-            color: var(--text-primary);
+            box-shadow: 0 4px 15px -10px var(--primary-glow);
         }
-        
-        .day-tabs button.day-complete .day-name {
-            color: var(--success);
-        }
-        
+        .day-tabs button.day-complete .day-name { color: var(--success); }
         .day-tabs button.day-complete .completion-dot {
             background-color: var(--success);
             box-shadow: 0 0 8px var(--success-glow);
@@ -58,259 +48,318 @@
             border: 1px solid var(--border-primary);
             transition: all 0.3s ease;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(15px);
         }
-        
-        .exercise-card.visible {
-             opacity: 1;
-             transform: translateY(0);
-        }
-
+        .exercise-card:hover { border-color: var(--border-secondary); transform: translateY(12px) scale(1.01); }
+        .exercise-card.visible { opacity: 1; transform: translateY(0); }
         .exercise-card.completed {
-            background-color: #1a221f;
-            border-color: #2a3f35;
+            background-color: rgba(0, 255, 127, 0.05);
+            border-color: rgba(0, 255, 127, 0.3);
         }
-        
         .exercise-card.completed .exercise-name {
             text-decoration: line-through;
             color: var(--text-tertiary);
         }
-        
-        .exercise-card.rest-day {
-            background-color: var(--surface-secondary);
-            text-align: center;
-        }
+        .exercise-card.rest-day { background-color: var(--surface-secondary); text-align: center; }
 
-        .progress-bar-fg {
-            background-color: var(--primary);
-            transition: width 0.5s ease-in-out;
+        .progress-bar-fg { 
+            background: linear-gradient(90deg, var(--primary), #ef4444); 
+            transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
         .custom-checkbox {
-            -webkit-appearance: none;
-            appearance: none;
+            -webkit-appearance: none; appearance: none;
             background-color: var(--surface-secondary);
-            border: 1px solid var(--border-secondary);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border: 2px solid var(--border-primary);
+            border-radius: 8px; /* Squared off */
+            width: 28px; height: 28px;
+            cursor: pointer; transition: all 0.2s ease-in-out;
             position: relative;
         }
-
-        .custom-checkbox:checked {
-            background-color: var(--primary);
+        .custom-checkbox:hover { border-color: var(--primary); }
+        .custom-checkbox:checked { 
+            background-color: var(--primary); 
             border-color: var(--primary);
+            transform: scale(0.9);
         }
-
         .custom-checkbox:checked::after {
-            content: '✓';
-            font-size: 16px;
-            color: var(--text-primary);
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            content: '✓'; font-size: 20px; font-weight: 900; color: var(--background);
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
         }
         
+        .section-header {
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 32px;
+        }
+        .section-header span { color: var(--primary); }
+
         /* Modal Styles */
         .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 50; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease;
         }
-        .modal-backdrop.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal-backdrop.visible { opacity: 1; visibility: visible; }
         .modal-content {
             background-color: var(--surface-primary);
-            padding: 24px;
-            border-radius: 12px;
             border: 1px solid var(--border-primary);
-            width: 90%;
-            max-width: 400px;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
+            padding: 24px; border-radius: 12px;
+            width: 90%; max-width: 500px;
+            transform: translateY(20px); transition: transform 0.3s ease;
         }
-        .modal-backdrop.visible .modal-content {
-            transform: scale(1);
-        }
+        .modal-backdrop.visible .modal-content { transform: translateY(0); }
     </style>
 </head>
 <body class="bg-[var(--background)]">
 
     <div class="container mx-auto max-w-4xl p-4 md:p-6">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight">Grindstone Tracker</h1>
-            <p class="text-[var(--text-secondary)] mt-2">Your 12-Week Minimal Equipment Plan</p>
+        <header class="text-center mb-10">
+            <h1 class="text-5xl md:text-6xl font-black text-[var(--text-primary)]">
+                IGNITE<span class="text-[var(--primary)]">.</span>
+            </h1>
+            <p class="text-[var(--text-secondary)] mt-2 font-medium">20-Week Recomposition Protocol</p>
         </header>
 
         <!-- Overall Progress -->
-        <div class="mb-8 p-4 bg-[var(--surface-primary)] rounded-xl border border-[var(--border-primary)]">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-lg font-bold text-[var(--text-primary)]">Total Progress</h3>
-                <span id="progress-text" class="font-semibold text-[var(--primary)]">0%</span>
+        <div class="mb-10 p-5 bg-[var(--surface-primary)] rounded-xl border border-[var(--border-primary)]">
+            <div class="flex justify-between items-center mb-3">
+                <h3 id="progress-title" class="text-lg font-bold text-[var(--text-primary)]">Total Progress</h3>
+                <span id="progress-text" class="font-semibold text-[var(--primary)] text-lg">0%</span>
             </div>
-            <div class="w-full h-3 rounded-full bg-[var(--surface-secondary)] overflow-hidden">
+            <div class="w-full h-4 rounded-full bg-[var(--surface-secondary)] overflow-hidden border border-[var(--border-primary)]">
                 <div id="progress-bar" class="progress-bar-fg h-full rounded-full" style="width: 0%;"></div>
             </div>
         </div>
 
         <!-- Controls -->
-        <div class="bg-[var(--surface-primary)] p-4 rounded-xl border border-[var(--border-primary)] mb-8">
-            <div class="phase-selector flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2 md:space-x-4 mb-6">
-                <button data-phase="1" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 1 (Wks 1-4)</button>
-                <button data-phase="2" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 2 (Wks 5-8)</button>
-                <button data-phase="3" class="phase-btn flex-1 py-3 px-2 text-sm md:text-base font-bold rounded-lg bg-[var(--surface-secondary)] text-[var(--text-secondary)] transition">Phase 3 (Wks 9-12)</button>
-            </div>
-
-            <div class="week-nav flex items-center justify-between mb-6">
-                <button id="prev-week" class="p-3 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--border-primary)] disabled:opacity-50 disabled:cursor-not-allowed">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <div class="sticky top-0 z-10 bg-black/50 backdrop-blur-lg py-4 -mx-4 px-4 mb-8">
+            <div class="week-nav flex items-center justify-between mb-6 max-w-4xl mx-auto">
+                <button id="prev-week" class="p-3 rounded-full bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--primary)] hover:border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
                 <div class="text-center">
-                    <h2 id="week-title" class="text-xl md:text-2xl font-bold">Week 1</h2>
-                    <p id="phase-focus" class="text-[var(--text-secondary)] text-sm">Foundation / Accumulation</p>
+                    <h2 id="week-title" class="text-2xl md:text-3xl font-bold">Week 1</h2>
+                    <p id="phase-focus" class="text-[var(--text-secondary)] font-medium">Foundation & Posture</p>
                 </div>
-                <button id="next-week" class="p-3 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--border-primary)] disabled:opacity-50 disabled:cursor-not-allowed">
-                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <button id="next-week" class="p-3 rounded-full bg-[var(--surface-secondary)] border border-[var(--border-primary)] transition hover:bg-[var(--primary)] hover:border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed">
+                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
 
-            <div class="day-tabs flex justify-around border-b border-[var(--border-primary)]">
-                <button data-day="0" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Mon</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="1" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Tue</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="2" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Wed</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="3" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Thu</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="4" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Fri</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="5" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Sat</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
-                <button data-day="6" class="day-tab flex-1 py-3 font-semibold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base">
-                    <span class="day-name">Sun</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1 transition"></div>
-                </button>
+            <div class="day-tabs flex justify-around border-b-2 border-[var(--border-primary)] max-w-4xl mx-auto">
+                <button data-day="0" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Mon</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="1" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Tue</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="2" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Wed</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="3" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Thu</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="4" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Fri</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="5" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Sat</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
+                <button data-day="6" class="day-tab flex-1 pb-3 pt-2 font-bold text-[var(--text-secondary)] border-b-2 border-transparent transition text-sm md:text-base"><span class="day-name">Sun</span><div class="completion-dot w-1.5 h-1.5 rounded-full bg-transparent mx-auto mt-1.5 transition"></div></button>
             </div>
         </div>
 
         <main>
-            <div class="flex justify-between items-center mb-4">
-                 <h3 id="day-focus-title" class="text-2xl font-bold"></h3>
-            </div>
+            <h3 id="day-focus-title" class="text-3xl font-extrabold mb-6"></h3>
             <div id="workout-container" class="space-y-4"></div>
         </main>
         
-        <footer class="text-center mt-12">
-            <button id="reset-btn" class="text-sm text-[var(--text-tertiary)] hover:text-[var(--primary)] transition">Reset Progress</button>
+        <footer class="text-center mt-16">
+            <button id="reset-btn" class="text-sm text-[var(--text-tertiary)] hover:text-[var(--primary)] transition font-semibold">Reset All Progress</button>
         </footer>
     </div>
     
-    <!-- Reset Confirmation Modal -->
-    <div id="reset-modal" class="modal-backdrop">
-        <div class="modal-content">
-            <h3 class="text-xl font-bold mb-2">Are you sure?</h3>
-            <p class="text-[var(--text-secondary)] mb-6">This will permanently delete all your tracked progress. This action cannot be undone.</p>
-            <div class="flex justify-end space-x-3">
-                <button id="cancel-reset-btn" class="px-4 py-2 rounded-lg bg-[var(--surface-secondary)] hover:bg-[var(--border-primary)] transition font-semibold">Cancel</button>
-                <button id="confirm-reset-btn" class="px-4 py-2 rounded-lg bg-[var(--primary)] hover:opacity-90 transition font-semibold">Yes, Reset</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Modals -->
+    <div id="reset-modal" class="modal-backdrop"><div class="modal-content"><h3 class="text-xl font-bold mb-2">Confirm Reset</h3><p class="text-[var(--text-secondary)] mb-6">This will permanently delete all tracked progress. This action cannot be undone.</p><div class="flex justify-end space-x-3"><button id="cancel-reset-btn" class="px-5 py-2 rounded-lg bg-[var(--surface-secondary)] hover:bg-[var(--border-primary)] transition font-semibold">Cancel</button><button id="confirm-reset-btn" class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-500 transition font-semibold">Reset</button></div></div></div>
+    <div id="note-modal" class="modal-backdrop"><div class="modal-content"><h3 id="note-title" class="text-xl font-bold mb-3 text-[var(--primary)]"></h3><p id="note-text" class="text-[var(--text-secondary)] mb-6 whitespace-pre-line leading-relaxed"></p><div class="flex justify-end"><button id="close-note-btn" class="px-5 py-2 rounded-lg bg-[var(--primary)] hover:opacity-90 transition font-semibold">Got It</button></div></div></div>
 
     <script>
-        const workoutData = {
-            "1":{name:"Foundation / Accumulation",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press (5 kg)",sets:"4 × 10–15"},{name:"Inverted Rows (table/towel)",sets:"4 × 8–12"},{name:"Pike Push-Ups",sets:"3 × 8–12"},{name:"Single-Arm DB Row (5 kg)",sets:"3 × 10–12/arm"},{name:"DB Lateral Raise (5 kg)",sets:"3 × 12–15"},{name:"Hollow Body Hold",sets:"3 × 30–40s"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (5 kg)",sets:"4 × 8–12/leg"},{name:"Single-Leg RDL (5 kg)",sets:"4 × 8–12/leg"},{name:"Goblet Squat (5 kg)",sets:"3 × 12–15"},{name:"Hip Thrust / Glute Bridge (DB)",sets:"3 × 12–15"},{name:"Standing Calf Raise",sets:"3 × 15–20"},{name:"Plank",sets:"3 × 40–60s"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Mobility / Stretch",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Incline Push-Ups (feet elevated)",sets:"4 × 8–12"},{name:"DB Shoulder Press (5 kg)",sets:"4 × 8–12"},{name:"DB Fly (floor/standing)",sets:"3 × 12–15"},{name:"Overhead Triceps Extension (5 kg)",sets:"3 × 12–15"},{name:"DB Lateral Raise (5 kg)",sets:"3 × 12–15"},{name:"Push-Ups (AMRAP)",sets:"2 sets"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups / Negatives",sets:"4 × AMRAP"},{name:"Bent-Over DB Row (5 kg)",sets:"4 × 8–12"},{name:"Inverted Rows",sets:"3 × 10–15"},{name:"DB Reverse Fly",sets:"3 × 15–20"},{name:"DB Bicep Curl",sets:"3 × 10–15"},{name:"Face Pulls (band/towel)",sets:"3 × 15–20"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light walk / Active Recovery",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest",sets:"Take it easy"}]}]},
-            "2":{name:"Strength & Hypertrophy",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press (heavy, 2s pause)",sets:"4 × 6–8"},{name:"Pull-Ups (weighted if possible)",sets:"4 × 6–8"},{name:"Pike Push-Ups (feet elevated)",sets:"4 × 6–10"},{name:"DB Lateral Raise (slow eccentric)",sets:"4 × 10–12"},{name:"Hanging Knee Raises",sets:"3 × 12–15"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (heavy)",sets:"4 × 6–8/leg"},{name:"Single-Leg RDL (increased weight)",sets:"4 × 6–8/leg"},{name:"Goblet Squat (pause at bottom)",sets:"4 × 8–10"},{name:"Hip Thrust (heavy, pause top)",sets:"3 × 8–10"},{name:"Plank (with DB on back)",sets:"3 × 30s"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Mobility / Foam Roll",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Decline Push-Ups",sets:"4 × 8–12"},{name:"DB Shoulder Press (seated, heavy)",sets:"4 × 6–8"},{name:"DB Fly (incline if possible)",sets:"3 × 10–12"},{name:"Close-Grip Push-Ups",sets:"3 × AMRAP"},{name:"Upright Row (DBs)",sets:"3 × 10–12"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups / Chin-Ups (alternating grip)",sets:"4 × AMRAP"},{name:"Bent-Over DB Row (4s ecc)",sets:"4 × 8–12"},{name:"Inverted Rows (feet elevated)",sets:"3 × 6–10"},{name:"DB Reverse Fly (pause top)",sets:"4 × 12–20"},{name:"DB Concentration Curl",sets:"3 × 10–12"},{name:"DB Shrugs (hold top 3s)",sets:"3 × 20"},{name:"Bird-Dog",sets:"3 × 10/side"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light walk / Mobility",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest",sets:"Take it easy"}]}]},
-            "3":{name:"Specialization & Peak",days:[{day:"Mon",focus:"Upper",exercises:[{name:"DB Floor Press + Push-Ups (superset)",sets:"4 × 8–12 + AMRAP"},{name:"Inverted Rows + DB Row (superset)",sets:"4 × 8–12 each"},{name:"Pike Push-Ups (cluster: 2–3 mini sets)",sets:"4 × 6–8"},{name:"DB Lateral Raise (21s method: low/mid/full ROM)",sets:"3 × 21"},{name:"Hollow Body Hold (weighted)",sets:"3 × 30s"}]},{day:"Tue",focus:"Lower",exercises:[{name:"Bulgarian Split Squat (1.5 reps style)",sets:"4 × 8–10/leg"},{name:"Single-Leg RDL + Calf Raise (combo)",sets:"4 × 10 each"},{name:"Goblet Squat (rest-pause final set)",sets:"4 × 12–15"},{name:"Hip Thrust (hold last rep 10s)",sets:"3 × 12–15"},{name:"Side Plank with Hip Dip",sets:"3 × 30s/side"}]},{day:"Wed",focus:"Rest",exercises:[{name:"Yoga / Deep Stretch",sets:"Active Recovery"}]},{day:"Thu",focus:"Push",exercises:[{name:"Explosive Push-Ups",sets:"5 × 5"},{name:"DB Push Press",sets:"4 × 6–8"},{name:"DB Fly + Hex Press (superset)",sets:"3 × 10 + 10"},{name:"Triceps Pushdowns (band) or Diamond Push-Ups",sets:"3 × 12–15"},{name:"Arnold Press",sets:"3 × 10–12"}]},{day:"Fri",focus:"Pull",exercises:[{name:"Pull-Ups (Mechanical Drop Set)",sets:"3 × AMRAP each"},{name:"Renegade Row",sets:"4 × 8–10/arm"},{name:"DB Pullover",sets:"3 × 10–12"},{name:"Hammer Curl + Reverse Curl (superset)",sets:"3 × 10 + 10"},{name:"Farmer's Walk (with DBs)",sets:"3 × 45s"}]},{day:"Sat",focus:"Rest",exercises:[{name:"Light Cardio / Play",sets:"Active Recovery"}]},{day:"Sun",focus:"Rest",exercises:[{name:"Complete Rest & Plan Next Cycle",sets:"Take it easy"}]}]}
+        const programData = {
+            phase1: {
+                weeks: 8, name: "Foundation & Posture Correction",
+                days: [
+                    { day: "Mon", focus: "Pull (Posture Focus)", sections: {
+                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days:\n- Arm Circles, Leg Swings, Torso Twists\n- Scapular wall slides, Arm crossovers, Band pull-aparts, Push-up to downward dog, Doorway chest stretch." }],
+                        workout: [{ name: "Scapular Pull-ups", sets: "3 sets of 8-10 reps", note: "Focus on initiating with the back muscles, not the arms. Keep arms straight." },{ name: "Inverted Rows", sets: "3 sets of 8-12 reps", note: "Keep your body in a straight line from head to heels. Squeeze shoulder blades together at the top." },{ name: "Single Arm Dumbbell Row", sets: "3 sets of 10-12 reps per side", note: "Maintain a flat back. Pull the dumbbell towards your hip, not straight up." },{ name: "Band Pull-Aparts", sets: "3 sets of 15-20 reps", note: "Keep arms straight and elbows locked. Don't use momentum." },{ name: "Face Pulls", sets: "3 sets of 15-20 reps", note: "Use a band or towel. Pull towards your face, leading with your hands." }],
+                        finisher: [{ name: "Farmer's Walk", sets: "3 sets of 45-60 seconds", note: "Walk with a tall posture, chest up, shoulders back and down." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol:\n- Lat stretch in doorway, Chest stretch, Upper trap stretch, Shoulder rolls, Wrist and forearm stretches." }] }},
+                    { day: "Tue", focus: "Push", sections: {
+                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days." }],
+                        workout: [{ name: "Push-ups (or variations)", sets: "3 sets of 8-12 reps", note: "Maintain a straight line from head to heels. Full range of motion." },{ name: "Dumbbell Overhead Press", sets: "3 sets of 8-12 reps", note: "Keep your core tight and avoid arching your lower back." },{ name: "Dumbbell Bench Press / Floor Press", sets: "3 sets of 8-12 reps", note: "Control the weight on the way down. Don't let your elbows flare out too wide." },{ name: "Lateral Raises", sets: "3 sets of 12-15 reps", note: "Lead with your elbows, keeping a slight bend. No momentum." }],
+                        finisher: [{ name: "Push-up Burnout", sets: "1 set to failure", note: "Go to failure with good form, then drop to your knees and go to failure again." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol, focusing on chest and shoulder stretches." }] }},
+                    { day: "Wed", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Mobility & Flexibility", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling." }] }},
+                    { day: "Thu", focus: "Lower Body", sections: {
+                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Lower Body Days:\n- Bodyweight Squats, Walking Lunges, Hip Circles, Glute Bridges." }],
+                        workout: [{ name: "Goblet Squats", sets: "3 sets of 8-12 reps", note: "Keep your chest up and back straight. Drive through your heels." },{ name: "Romanian Deadlifts (RDLs)", sets: "3 sets of 10-12 reps", note: "Keep a slight bend in your knees. Hinge at your hips, pushing them back." },{ name: "Walking Lunges", sets: "3 sets of 10-12 reps per leg", note: "Take a controlled step forward, lowering your hips until both knees are at a 90-degree angle." },{ name: "Glute Bridges", sets: "3 sets of 15-20 reps", note: "Drive through your heels and squeeze your glutes at the top." }],
+                        finisher: [{ name: "Bodyweight Squat Burnout", sets: "1 set to failure", note: "As many reps as possible with good form and controlled tempo." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol for Lower Body Days:\n- Quad stretch, Hamstring stretch, Pigeon pose, Calf stretch." }] }},
+                    { day: "Fri", focus: "Upper Body (V-Taper)", sections: {
+                         warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days." }],
+                        workout: [{ name: "Pull-ups / Inverted Rows", sets: "3 sets to failure", note: "Choose the variation that is challenging for you. Full range of motion." },{ name: "Dumbbell Overhead Press", sets: "3 sets of 8-12 reps", note: "Maintain strict form and focus on building shoulder width." },{ name: "Bent Over Dumbbell Rows", sets: "3 sets of 10-12 reps", note: "Keep your back flat and hinge at the hips. Pull towards your hips." },{ name: "Lateral Raises", sets: "3 sets of 12-15 reps", note: "Crucial for creating the illusion of a wider frame. Perfect, controlled form. No swinging." }],
+                        finisher: [{ name: "Lateral Raise Drop Set", sets: "1 set", note: "Perform 10-12 reps, immediately reduce the weight by 20-30% and go to failure. Repeat 1-2 more times." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol." }] }},
+                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
+                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                ]
+            },
+            phase2: {
+                weeks: 8, name: "Hypertrophy & Strength",
+                days: [
+                    { day: "Mon", focus: "Pull (Strength)", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                        workout: [
+                            { name: "Weighted Pull-ups", sets: "4 sets of 5-8 reps", note: "If you can do more than 8 bodyweight pull-ups, add weight. If not, continue with bodyweight to failure." },
+                            { name: "Barbell Rows", sets: "4 sets of 6-8 reps", note: "Focus on heavy, explosive pulling while maintaining a flat back. Use straps if your grip fails." },
+                            { name: "Single Arm Dumbbell Row", sets: "3 sets of 8-10 reps per side", note: "Increase the weight from Phase 1. Focus on a deep stretch at the bottom and a hard squeeze at the top." },
+                            { name: "Shrugs (Dumbbell or Barbell)", sets: "3 sets of 10-12 reps", note: "Focus on pulling your shoulders straight up to your ears. Pause at the top." }
+                        ],
+                        finisher: [{ name: "Bicep Curl 21s", sets: "2 sets", note: "7 reps from bottom to halfway, 7 reps from halfway to top, 7 full reps. This is one set." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                    }},
+                    { day: "Tue", focus: "Push (Strength)", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                        workout: [
+                            { name: "Dumbbell Bench Press", sets: "4 sets of 6-8 reps", note: "Go heavier than Phase 1. Control the negative and be explosive on the press." },
+                            { name: "Standing Overhead Press (Barbell or DB)", sets: "4 sets of 5-8 reps", note: "This is a primary strength builder. Keep core tight. Don't use leg drive." },
+                            { name: "Incline Dumbbell Press", sets: "3 sets of 8-10 reps", note: "Focus on the upper chest. Don't let your shoulders take over." },
+                            { name: "Triceps Dips (or Close Grip Push-ups)", sets: "3 sets to failure", note: "Use a bench or chair for dips. Go as deep as your shoulders comfortably allow." },
+                            { name: "Lateral Raises", sets: "4 sets of 10-15 reps", note: "Continue to focus on perfect form. Increase weight slightly if possible." }
+                        ],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                    }},
+                    { day: "Wed", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Mobility & Flexibility", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling." }] }},
+                    { day: "Thu", focus: "Lower Body (Strength)", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                        workout: [
+                            { name: "Barbell Back Squats", sets: "4 sets of 5-8 reps", note: "If you have access to a barbell, this is your primary movement. Focus on depth and form." },
+                            { name: "Romanian Deadlifts (RDLs)", sets: "4 sets of 6-8 reps", note: "Go heavy. Focus on the hamstring stretch and glute contraction." },
+                            { name: "Bulgarian Split Squats", sets: "3 sets of 8-10 reps per leg", note: "This is for hypertrophy. Control the movement and focus on the working leg." },
+                            { name: "Leg Press Calf Raises", sets: "4 sets of 10-15 reps", note: "If no leg press, use dumbbells and stand on a plate/step for a deeper stretch." }
+                        ],
+                        finisher: [{ name: "Walking Lunges", sets: "2 sets of 20 reps per leg", note: "Use bodyweight or light dumbbells. Focus on endurance." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                    }},
+                    { day: "Fri", focus: "Upper Body (Hypertrophy)", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1."}],
+                        workout: [
+                            { name: "Pull-ups", sets: "4 sets of 8-12 reps", note: "Focus on volume. Use assistance (bands) or a lat pulldown machine if needed to hit the rep range." },
+                            { name: "Seated Cable Rows", sets: "4 sets of 10-12 reps", note: "Focus on the squeeze. Use a variety of handles if available." },
+                            { name: "Incline Dumbbell Press", sets: "4 sets of 10-12 reps", note: "Focus on the upper chest contraction. Moderate weight." },
+                            { name: "Seated Dumbbell Shoulder Press", sets: "3 sets of 10-12 reps", note: "Less focus on pure strength, more on the mind-muscle connection and pump." },
+                            { name: "Lateral Raises", sets: "3 sets of 15-20 reps", note: "High reps for metabolic stress. Use lighter weight." }
+                        ],
+                        finisher: [{ name: "Bicep/Tricep Superset", sets: "3 sets of 10-15 reps each", note: "e.g., Dumbbell Curls immediately followed by Overhead Tricep Extensions." }],
+                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                    }},
+                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
+                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                ]
+            },
+            phase3: {
+                weeks: 4, name: "Metabolic Finisher & Definition",
+                days: [
+                     { day: "Mon", focus: "Full Body A", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                        workout: [
+                            { name: "Goblet Squat", sets: "5 sets of 10", note: "Explosive on the way up, controlled on the way down." },
+                            { name: "Pull-ups / Chin-ups", sets: "5 sets of AMRAP", note: "AMRAP = As Many Reps As Possible. Rest 60-90s between sets." },
+                            { name: "Dumbbell Bench Press", sets: "4 sets of 10-12", note: "Focus on controlled reps and feeling the chest work." },
+                            { name: "Lateral Raises", sets: "4 sets of 12-15", note: "Keep tension on the side delts." },
+                            { name: "Plank", sets: "3 sets to failure", note: "Hold a perfect plank for as long as possible." }
+                        ]
+                    }},
+                    { day: "Tue", focus: "Full Body B", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                        workout: [
+                            { name: "Romanian Deadlifts", sets: "5 sets of 10", note: "Focus on the hamstring stretch and glute squeeze." },
+                            { name: "Inverted Rows", sets: "5 sets of AMRAP", note: "Adjust foot position to make it challenging." },
+                            { name: "Push-ups", sets: "4 sets of AMRAP", note: "Go for maximum reps with perfect form." },
+                            { name: "Face Pulls", sets: "4 sets of 15-20", note: "High reps for shoulder health and posture." },
+                            { name: "Hanging Knee Raises", sets: "3 sets to failure", note: "Control the movement; don't swing." }
+                        ]
+                    }},
+                    { day: "Wed", focus: "Active Recovery / HIIT", sections: { workout: [{ name: "HIIT or Mobility", sets: "15-20 minutes", note: "Choose one: High-Intensity Interval Training (e.g., sprints, burpees) OR a full mobility session." }] }},
+                    { day: "Thu", focus: "Full Body A", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                        workout: [
+                            { name: "Goblet Squat", sets: "5 sets of 10", note: "Try to increase weight or reps from Monday." },
+                            { name: "Pull-ups / Chin-ups", sets: "5 sets of AMRAP", note: "Try to beat your previous AMRAP numbers." },
+                            { name: "Dumbbell Bench Press", sets: "4 sets of 10-12", note: "Maintain good form." },
+                            { name: "Lateral Raises", sets: "4 sets of 12-15", note: "Focus on the 'burn'." },
+                            { name: "Plank", sets: "3 sets to failure", note: "Try to hold longer than last time." }
+                        ]
+                    }},
+                    { day: "Fri", focus: "Full Body B", sections: {
+                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                        workout: [
+                            { name: "Romanian Deadlifts", sets: "5 sets of 10", note: "Focus on that mind-muscle connection." },
+                            { name: "Inverted Rows", sets: "5 sets of AMRAP", note: "Challenge yourself." },
+                            { name: "Push-ups", sets: "4 sets of AMRAP", note: "Beat your last performance." },
+                            { name: "Face Pulls", sets: "4 sets of 15-20", note: "Perfect form." },
+                            { name: "Hanging Knee Raises", sets: "3 sets to failure", note: "Squeeze your abs." }
+                        ]
+                    }},
+                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
+                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                ]
+            }
         };
 
         const E = {
-            phaseBtns: document.querySelectorAll('.phase-btn'),
-            prevWkBtn: document.getElementById('prev-week'),
-            nextWkBtn: document.getElementById('next-week'),
-            dayTabs: document.querySelectorAll('.day-tab'),
-            wkTitle: document.getElementById('week-title'),
-            phFocus: document.getElementById('phase-focus'),
-            dayFocus: document.getElementById('day-focus-title'),
-            workoutCont: document.getElementById('workout-container'),
-            progBar: document.getElementById('progress-bar'),
-            progText: document.getElementById('progress-text'),
+            prevWkBtn: document.getElementById('prev-week'), nextWkBtn: document.getElementById('next-week'),
+            dayTabs: document.querySelectorAll('.day-tab'), wkTitle: document.getElementById('week-title'),
+            phFocus: document.getElementById('phase-focus'), dayFocus: document.getElementById('day-focus-title'),
+            workoutCont: document.getElementById('workout-container'), progBar: document.getElementById('progress-bar'),
+            progText: document.getElementById('progress-text'), progTitle: document.getElementById('progress-title'),
             resetBtn: document.getElementById('reset-btn'),
-            resetModal: document.getElementById('reset-modal'),
-            cancelReset: document.getElementById('cancel-reset-btn'),
-            confirmReset: document.getElementById('confirm-reset-btn'),
+            resetModal: document.getElementById('reset-modal'), cancelReset: document.getElementById('cancel-reset-btn'),
+            confirmReset: document.getElementById('confirm-reset-btn'), noteModal: document.getElementById('note-modal'),
+            noteTitle: document.getElementById('note-title'), noteText: document.getElementById('note-text'),
+            closeNoteBtn: document.getElementById('close-note-btn'),
         };
 
-        let state = {
-            week: 1,
-            day: 0,
-            phase: 1,
-            completed: {},
-            totalExercises: 0,
-        };
+        let state = { week: 1, day: 0, completed: {}, totalExercises: 0 };
+        const totalWeeks = 20;
 
-        const getPhaseFromWeek = week => Math.ceil(week / 4);
-
-        function renderWorkout() {
-            const phaseData = workoutData[state.phase];
-            const dayData = phaseData.days[state.day];
-            
-            E.dayFocus.textContent = `${dayData.day} - ${dayData.focus}`;
-            E.workoutCont.innerHTML = '';
-
-            if (!dayData.exercises) return;
-
-            dayData.exercises.forEach((ex, i) => {
-                const exId = `w${state.week}d${state.day}e${i}`;
-                const isDone = state.completed[exId] === true;
-                const isRest = dayData.focus === "Rest";
-
-                const card = document.createElement('div');
-                card.className = `exercise-card flex items-center p-4 rounded-xl shadow-md ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''}`;
-                
-                let content = `
-                    <div class="flex-1 ${isRest ? '' : 'mr-4'}">
-                        <h4 class="exercise-name font-bold text-lg text-[var(--text-primary)]">${ex.name}</h4>
-                        <p class="text-sm text-[var(--text-secondary)]">${ex.sets}</p>
-                    </div>
-                `;
-                if (!isRest) {
-                    content += `<div class="flex-shrink-0"><input type="checkbox" data-id="${exId}" class="custom-checkbox" ${isDone ? 'checked' : ''}></div>`;
-                }
-                card.innerHTML = content;
-                E.workoutCont.appendChild(card);
-                
-                setTimeout(() => card.classList.add('visible'), (i + 1) * 50);
-            });
-            
-            E.workoutCont.querySelectorAll('.custom-checkbox').forEach(cb => {
-                cb.addEventListener('change', handleExCompletion);
-            });
+        function getPhaseFromWeek(week) {
+            if (week <= 8) return { key: 'phase1', data: programData.phase1 };
+            if (week <= 16) return { key: 'phase2', data: programData.phase2 };
+            return { key: 'phase3', data: programData.phase3 };
         }
 
-        function handleExCompletion(e) {
+        function renderWorkout() {
+            const phase = getPhaseFromWeek(state.week);
+            const dayData = phase.data.days[state.day];
+            E.dayFocus.textContent = `${dayData.day} - ${dayData.focus}`;
+            E.workoutCont.innerHTML = '';
+            const isRest = dayData.focus.toLowerCase().includes('rest');
+
+            for (const sectionName in dayData.sections) {
+                const exercises = dayData.sections[sectionName];
+                if (!exercises || exercises.length === 0) continue;
+                const header = document.createElement('h4');
+                header.className = 'section-header text-2xl font-bold';
+                header.innerHTML = `${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)} <span>//</span>`;
+                E.workoutCont.appendChild(header);
+                exercises.forEach((ex, i) => {
+                    const exId = `w${state.week}d${state.day}${sectionName}${i}`;
+                    const isDone = state.completed[exId];
+                    const card = document.createElement('div');
+                    card.className = `exercise-card flex items-center p-4 rounded-xl shadow-md ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''}`;
+                    card.innerHTML = `<div class="flex-1 mr-2"><h5 class="exercise-name font-bold text-md md:text-lg text-[var(--text-primary)]">${ex.name}</h5><p class="text-sm text-[var(--text-secondary)]">${ex.sets}</p></div><div class="flex items-center space-x-2 md:space-x-3"><button class="note-btn p-1" data-note="${ex.note.replace(/"/g, '&quot;')}" data-name="${ex.name}"><svg class="w-6 h-6 stroke-current text-gray-500 hover:text-[var(--primary)] transition" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>${!isRest ? `<input type="checkbox" data-id="${exId}" class="custom-checkbox" ${isDone ? 'checked' : ''}>` : ''}</div>`;
+                    E.workoutCont.appendChild(card);
+                    setTimeout(() => card.classList.add('visible'), (E.workoutCont.children.length) * 40);
+                });
+            }
+        }
+
+        function handleCompletion(e) {
             const exId = e.target.dataset.id;
             state.completed[exId] = e.target.checked;
             e.target.closest('.exercise-card').classList.toggle('completed', e.target.checked);
@@ -319,112 +368,78 @@
         }
 
         function updateAllProgress() {
-            updateGlobalProgress();
-            updateDayCompletionStatus();
-        }
-
-        function updateGlobalProgress() {
             const doneCount = Object.values(state.completed).filter(Boolean).length;
             const pct = state.totalExercises > 0 ? (doneCount / state.totalExercises) * 100 : 0;
-            E.progBar.style.width = `${pct}%`;
-            E.progText.textContent = `${Math.round(pct)}%`;
-        }
-
-        function updateDayCompletionStatus() {
+            E.progBar.style.width = `${pct}%`; E.progText.textContent = `${Math.round(pct)}%`;
+            
+            const currentPhase = getPhaseFromWeek(state.week);
             E.dayTabs.forEach((tab, dayIndex) => {
-                const dayExercises = workoutData[getPhaseFromWeek(state.week)]?.days[dayIndex]?.exercises;
-                const isRest = workoutData[getPhaseFromWeek(state.week)]?.days[dayIndex]?.focus === "Rest";
-                
-                if (!dayExercises || isRest) {
-                     tab.classList.remove('day-complete');
-                     return;
+                const dayData = currentPhase.data.days[dayIndex];
+                if (dayData.focus.toLowerCase().includes('rest')) { tab.classList.remove('day-complete'); return; }
+                let totalForDay = 0, completedForDay = 0;
+                for (const section in dayData.sections) {
+                    dayData.sections[section].forEach((ex, i) => {
+                        totalForDay++;
+                        if (state.completed[`w${state.week}d${dayIndex}${section}${i}`]) completedForDay++;
+                    });
                 }
-
-                const totalForDay = dayExercises.length;
-                let completedForDay = 0;
-                for(let i = 0; i < totalForDay; i++) {
-                    const exId = `w${state.week}d${dayIndex}e${i}`;
-                    if (state.completed[exId]) {
-                        completedForDay++;
-                    }
-                }
-                tab.classList.toggle('day-complete', completedForDay === totalForDay);
+                tab.classList.toggle('day-complete', totalForDay > 0 && completedForDay === totalForDay);
             });
         }
 
         function updateUI() {
-            state.phase = getPhaseFromWeek(state.week);
+            const phase = getPhaseFromWeek(state.week);
             E.wkTitle.textContent = `Week ${state.week}`;
-            E.phFocus.textContent = workoutData[state.phase].name;
-            E.phaseBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.phase) === state.phase));
+            E.phFocus.textContent = phase.data.name;
+            E.progTitle.textContent = `${phase.key.replace('p','P')} Progress`
             E.dayTabs.forEach(t => t.classList.toggle('active', parseInt(t.dataset.day) === state.day));
             E.prevWkBtn.disabled = state.week === 1;
-            E.nextWkBtn.disabled = state.week === 12;
+            E.nextWkBtn.disabled = state.week === totalWeeks;
             renderWorkout();
             updateAllProgress();
         }
 
-        function changeWeek(newWeek) {
-            if (newWeek < 1 || newWeek > 12) return;
-            state.week = newWeek;
-            updateUI();
-        }
-
-        function changeDay(newDay) {
-            state.day = newDay;
-            updateUI();
-        }
-
         function saveProgress() {
-            try { localStorage.setItem('grindstoneProgress', JSON.stringify(state.completed)); }
+            try { localStorage.setItem('recompIgniteProgress', JSON.stringify(state.completed)); }
             catch (e) { console.warn("Local storage is unavailable."); }
         }
 
         function loadProgress() {
-            try {
-                const saved = localStorage.getItem('grindstoneProgress');
-                state.completed = saved ? JSON.parse(saved) : {};
-            } catch (e) {
-                console.warn("Could not load progress from local storage.");
-                state.completed = {};
-            }
+            try { state.completed = JSON.parse(localStorage.getItem('recompIgniteProgress')) || {}; }
+            catch (e) { state.completed = {}; }
         }
 
         function calculateTotalExercises() {
             state.totalExercises = 0;
-            for (let week = 1; week <= 12; week++) {
-                const phase = workoutData[getPhaseFromWeek(week)];
-                phase.days.forEach(day => {
-                    if (day.focus !== "Rest") {
-                        state.totalExercises += day.exercises.length;
-                    }
+            for (let week = 1; week <= totalWeeks; week++) {
+                const phase = getPhaseFromWeek(week);
+                phase.data.days.forEach(day => {
+                    if (day.focus.toLowerCase().includes('rest')) return;
+                    for (const section in day.sections) state.totalExercises += day.sections[section].length;
                 });
             }
         }
         
-        function resetProgress() {
-            state.completed = {};
-            saveProgress();
-            updateUI();
-            E.resetModal.classList.remove('visible');
-        }
-
         function setupEventListeners() {
-            E.phaseBtns.forEach(btn => btn.addEventListener('click', () => changeWeek([1, 5, 9][parseInt(btn.dataset.phase) - 1])));
-            E.dayTabs.forEach(tab => tab.addEventListener('click', () => changeDay(parseInt(tab.dataset.day))));
-            E.prevWkBtn.addEventListener('click', () => changeWeek(state.week - 1));
-            E.nextWkBtn.addEventListener('click', () => changeWeek(state.week + 1));
-            
+            E.dayTabs.forEach(tab => tab.addEventListener('click', () => { state.day = parseInt(tab.dataset.day); updateUI(); }));
+            E.prevWkBtn.addEventListener('click', () => { if(state.week > 1) {state.week--; updateUI();} });
+            E.nextWkBtn.addEventListener('click', () => { if(state.week < totalWeeks) {state.week++; updateUI();} });
+            E.workoutCont.addEventListener('change', e => e.target.matches('.custom-checkbox') && handleCompletion(e));
+            E.workoutCont.addEventListener('click', e => {
+                const noteBtn = e.target.closest('.note-btn');
+                if(noteBtn) { E.noteTitle.textContent = noteBtn.dataset.name; E.noteText.textContent = noteBtn.dataset.note; E.noteModal.classList.add('visible'); }
+            });
+            const closeModal = () => { E.noteModal.classList.remove('visible'); E.resetModal.classList.remove('visible'); };
             E.resetBtn.addEventListener('click', () => E.resetModal.classList.add('visible'));
-            E.cancelReset.addEventListener('click', () => E.resetModal.classList.remove('visible'));
-            E.resetModal.addEventListener('click', (e) => { if (e.target === E.resetModal) E.resetModal.classList.remove('visible'); });
-            E.confirmReset.addEventListener('click', resetProgress);
+            E.cancelReset.addEventListener('click', closeModal);
+            E.confirmReset.addEventListener('click', () => { state.completed = {}; saveProgress(); updateUI(); closeModal(); });
+            E.closeNoteBtn.addEventListener('click', closeModal);
+            [E.noteModal, E.resetModal].forEach(m => m.addEventListener('click', e => e.target === m && closeModal()));
         }
 
         function init() {
             const today = new Date().getDay();
-            state.day = today === 0 ? 6 : today - 1; // 0=Sun -> 6, 1=Mon -> 0, etc.
-
+            state.day = today === 0 ? 6 : today - 1; 
             loadProgress();
             calculateTotalExercises();
             setupEventListeners();
@@ -435,3 +450,4 @@
     </script>
 </body>
 </html>
+
