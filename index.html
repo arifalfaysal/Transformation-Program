@@ -12,14 +12,14 @@
             --background: #000000;
             --surface-primary: #121212;
             --surface-secondary: #1A1A1A;
-            --primary: #FF1F31; /* Intense Red */
+            --primary: rgb(220, 38, 38); /* Intense Red */
             --primary-glow: rgba(220, 38, 38, 0.3);
             --text-primary: #FFFFFF;
             --text-secondary: #A0A0A0;
             --text-tertiary: #5F5F6D;
             --border-primary: #2A2A2A;
             --border-secondary: #3D3D3D;
-            --success: #00FF7F; /* Spring Green */
+            --success: rgb(0, 255, 127); /* Spring Green */
             --success-glow: rgba(0, 255, 127, 0.2);
         }
 
@@ -121,7 +121,7 @@
 
     <div class="container mx-auto max-w-4xl p-4 md:p-6">
         <header class="text-center mb-10">
-            <h1 class="text-5xl md:text-6xl font-black text-[var(--text-primary)]">
+            <h1 class="text-5xl md:text-6xl font-black text-[var(--text-primary)] uppercase">
                 IGNITE<span class="text-[var(--primary)]">.</span>
             </h1>
             <p class="text-[var(--text-secondary)] mt-2 font-medium">20-Week Recomposition Protocol</p>
@@ -180,133 +180,152 @@
 
     <script>
         const programData = {
-            phase1: {
+            phase1: { // Weeks 1-8
                 weeks: 8, name: "Foundation & Posture Correction",
                 days: [
-                    { day: "Mon", focus: "Pull (Posture Focus)", sections: {
-                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days:\n- Arm Circles, Leg Swings, Torso Twists\n- Scapular wall slides, Arm crossovers, Band pull-aparts, Push-up to downward dog, Doorway chest stretch." }],
-                        workout: [{ name: "Scapular Pull-ups", sets: "3 sets of 8-10 reps", note: "Focus on initiating with the back muscles, not the arms. Keep arms straight." },{ name: "Inverted Rows", sets: "3 sets of 8-12 reps", note: "Keep your body in a straight line from head to heels. Squeeze shoulder blades together at the top." },{ name: "Single Arm Dumbbell Row", sets: "3 sets of 10-12 reps per side", note: "Maintain a flat back. Pull the dumbbell towards your hip, not straight up." },{ name: "Band Pull-Aparts", sets: "3 sets of 15-20 reps", note: "Keep arms straight and elbows locked. Don't use momentum." },{ name: "Face Pulls", sets: "3 sets of 15-20 reps", note: "Use a band or towel. Pull towards your face, leading with your hands." }],
-                        finisher: [{ name: "Farmer's Walk", sets: "3 sets of 45-60 seconds", note: "Walk with a tall posture, chest up, shoulders back and down." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol:\n- Lat stretch in doorway, Chest stretch, Upper trap stretch, Shoulder rolls, Wrist and forearm stretches." }] }},
-                    { day: "Tue", focus: "Push", sections: {
-                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days." }],
-                        workout: [{ name: "Push-ups (or variations)", sets: "3 sets of 8-12 reps", note: "Maintain a straight line from head to heels. Full range of motion." },{ name: "Dumbbell Overhead Press", sets: "3 sets of 8-12 reps", note: "Keep your core tight and avoid arching your lower back." },{ name: "Dumbbell Bench Press / Floor Press", sets: "3 sets of 8-12 reps", note: "Control the weight on the way down. Don't let your elbows flare out too wide." },{ name: "Lateral Raises", sets: "3 sets of 12-15 reps", note: "Lead with your elbows, keeping a slight bend. No momentum." }],
-                        finisher: [{ name: "Push-up Burnout", sets: "1 set to failure", note: "Go to failure with good form, then drop to your knees and go to failure again." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol, focusing on chest and shoulder stretches." }] }},
-                    { day: "Wed", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Mobility & Flexibility", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling." }] }},
-                    { day: "Thu", focus: "Lower Body", sections: {
-                        warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Lower Body Days:\n- Bodyweight Squats, Walking Lunges, Hip Circles, Glute Bridges." }],
-                        workout: [{ name: "Goblet Squats", sets: "3 sets of 8-12 reps", note: "Keep your chest up and back straight. Drive through your heels." },{ name: "Romanian Deadlifts (RDLs)", sets: "3 sets of 10-12 reps", note: "Keep a slight bend in your knees. Hinge at your hips, pushing them back." },{ name: "Walking Lunges", sets: "3 sets of 10-12 reps per leg", note: "Take a controlled step forward, lowering your hips until both knees are at a 90-degree angle." },{ name: "Glute Bridges", sets: "3 sets of 15-20 reps", note: "Drive through your heels and squeeze your glutes at the top." }],
-                        finisher: [{ name: "Bodyweight Squat Burnout", sets: "1 set to failure", note: "As many reps as possible with good form and controlled tempo." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol for Lower Body Days:\n- Quad stretch, Hamstring stretch, Pigeon pose, Calf stretch." }] }},
-                    { day: "Fri", focus: "Upper Body (V-Taper)", sections: {
-                         warmup: [{ name: "General & Dynamic Prep", sets: "8-12 mins", note: "Follow the full warm-up protocol for Upper Body Days." }],
-                        workout: [{ name: "Pull-ups / Inverted Rows", sets: "3 sets to failure", note: "Choose the variation that is challenging for you. Full range of motion." },{ name: "Dumbbell Overhead Press", sets: "3 sets of 8-12 reps", note: "Maintain strict form and focus on building shoulder width." },{ name: "Bent Over Dumbbell Rows", sets: "3 sets of 10-12 reps", note: "Keep your back flat and hinge at the hips. Pull towards your hips." },{ name: "Lateral Raises", sets: "3 sets of 12-15 reps", note: "Crucial for creating the illusion of a wider frame. Perfect, controlled form. No swinging." }],
-                        finisher: [{ name: "Lateral Raise Drop Set", sets: "1 set", note: "Perform 10-12 reps, immediately reduce the weight by 20-30% and go to failure. Repeat 1-2 more times." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Follow the full cooldown protocol." }] }},
-                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
-                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                    { day: "Mon", focus: "PULL", sections: {
+                        warmup: [{ name: "Standard Upper Body Warm-up", sets: "5-10 mins", note: "Complete the full warm-up protocol: Arm Circles, Leg Swings, Torso Twists, Scapular Wall Slides, Arm Crossovers, Band Pull-Aparts, Push-up to Downward Dog, Doorway Chest Stretch."}],
+                        workout: [
+                            { name: "Inverted Rows", sets: "4 sets of AMRAP", note: "AMRAP = As Many Reps As Possible with perfect form. Keep body straight. Pull chest to bar/towel. Squeeze back hard." },
+                            { name: "Single-Arm DB Row", sets: "4 sets of 10-12 reps/side", note: "Flat back is critical. Pull elbow towards the ceiling, dumbbell towards your hip. Control the negative (lowering) for 2-3 seconds." },
+                            { name: "Band Pull-Aparts", sets: "3 sets of 15-20 reps", note: "Arms straight, palms down. Initiate by squeezing shoulder blades together. Do not use momentum. Focus on rear delts." },
+                            { name: "Scapular Pull-ups", sets: "3 sets of 8-12 reps", note: "Hang from a bar. Without bending arms, pull your shoulder blades down and back, lifting your body slightly. This is a small but crucial movement for back activation." },
+                            { name: "DB Bicep Curls", sets: "3 sets of 10-15 reps", note: "Keep elbows pinned to your sides. No swinging. Squeeze bicep at the top and control the negative." }
+                        ],
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Lat stretch, chest stretch, upper trap stretch, shoulder rolls."}]
+                    }},
+                    { day: "Tue", focus: "LOWER", sections: {
+                        warmup: [{ name: "Standard Lower Body Warm-up", sets: "5-10 mins", note: "Complete the full warm-up protocol: Bodyweight Squats, Walking Lunges, Hip Circles, Leg Swings, Glute Bridges."}],
+                        workout: [
+                            { name: "DB Goblet Squats", sets: "4 sets of 10-15 reps", note: "Hold one dumbbell vertically against your chest. Keep chest up, back straight. Squat as deep as possible without your back rounding. Drive through heels." },
+                            { name: "DB Romanian Deadlifts", sets: "4 sets of 12-15 reps", note: "Slight bend in knees. Hinge at the hips, pushing your butt back. Keep DBs close to legs. Feel a deep stretch in hamstrings. Squeeze glutes to return to start." },
+                            { name: "Glute Bridges", sets: "4 sets of 15-20 reps", note: "Lie on your back, knees bent. Drive through heels, lifting your hips. Squeeze glutes hard at the top for 2 seconds. Can place DB on hips for added weight." },
+                            { name: "DB Standing Calf Raises", sets: "4 sets of 15-20 reps", note: "Stand on a step or plate to get a deeper stretch. Pause for a second at the bottom and 2 seconds at the top (full contraction)." },
+                            { name: "Plank", sets: "3 sets of 45-60s hold", note: "Body in a straight line from head to heels. Brace your core as if you're about to be punched. Don't let hips sag." }
+                        ],
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Quad stretch, hamstring stretch, pigeon pose for glutes, calf stretch."}]
+                    }},
+                    { day: "Wed", focus: "REST", sections: { workout: [{ name: "Active Recovery", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling. Promotes recovery." }] }},
+                    { day: "Thu", focus: "PUSH", sections: {
+                        warmup: [{ name: "Standard Upper Body Warm-up", sets: "5-10 mins", note: "Complete the full warm-up protocol."}],
+                        workout: [
+                            { name: "Incline Push-ups", sets: "4 sets of AMRAP", note: "Hands on a raised surface (bench, table). The higher the surface, the easier. Maintain a straight body line. Control the movement." },
+                            { name: "Pike Push-ups", sets: "4 sets of AMRAP", note: "From a downward dog position, bend elbows and lower the top of your head towards the floor. This targets the shoulders." },
+                            { name: "DB Floor Press", sets: "4 sets of 10-12 reps", note: "Lie on the floor. This limits range of motion to protect shoulders. Press DBs up, squeezing the chest at the top." },
+                            { name: "DB Lateral Raises", sets: "4 sets of 12-15 reps", note: "Slight bend in elbows. Raise arms out to the side up to shoulder height. Lead with the elbows, not the hands. No swinging." },
+                            { name: "DB Overhead Triceps Extension", sets: "3 sets of 12-15 reps", note: "Hold one DB with both hands over your head. Lower it behind your head by bending your elbows. Keep elbows tucked in. Extend back up." }
+                        ],
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Focus on chest and shoulder stretches."}]
+                    }},
+                    { day: "Fri", focus: "UPPER", sections: {
+                        warmup: [{ name: "Standard Upper Body Warm-up", sets: "5-10 mins", note: "Complete the full warm-up protocol."}],
+                        workout: [
+                            { name: "Push-ups", sets: "3 sets of AMRAP", note: "Perform as many reps as possible with perfect form. If you can't do a standard push-up, do them on your knees or continue with incline push-ups." },
+                            { name: "Inverted Rows", sets: "3 sets of AMRAP", note: "This is your second time this week. Try to beat your previous rep count. Form is king." },
+                            { name: "DB Overhead Press", sets: "4 sets of 10-12 reps", note: "Sit or stand. Press DBs from shoulder height to overhead. Keep core tight to prevent back arching." },
+                            { name: "DB Bent-Over Row", sets: "4 sets of 10-12 reps", note: "Use both arms. Hinge at hips with a flat back. Row both DBs towards your hips, squeezing your back muscles." },
+                            { name: "Farmer's Walk", sets: "3 sets of 45-60s", note: "Hold a heavy DB in each hand. Walk with chest up, shoulders back and down. This builds grip, traps, and core stability." }
+                        ],
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Full upper body static stretching."}]
+                    }},
+                    { day: "Sat", focus: "REST", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great. Listen to your body." }] }},
+                    { day: "Sun", focus: "COMPLETE REST", sections: { workout: [{ name: "Total Recovery", sets: "Full day", note: "Focus on nutrition, hydration, and sleep. This is when you grow." }] }}
                 ]
             },
-            phase2: {
-                weeks: 8, name: "Hypertrophy & Strength",
+            phase2: { // Weeks 9-16
+                weeks: 8, name: "Hypertrophy & Mass Building",
                 days: [
-                    { day: "Mon", focus: "Pull (Strength)", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                    { day: "Mon", focus: "PULL", sections: {
+                        warmup: [{ name: "Modified Warm-up", sets: "5-10 mins", note: "Standard warm-up plus 1-2 light sets of your first exercise."}],
                         workout: [
-                            { name: "Weighted Pull-ups", sets: "4 sets of 5-8 reps", note: "If you can do more than 8 bodyweight pull-ups, add weight. If not, continue with bodyweight to failure." },
-                            { name: "Barbell Rows", sets: "4 sets of 6-8 reps", note: "Focus on heavy, explosive pulling while maintaining a flat back. Use straps if your grip fails." },
-                            { name: "Single Arm Dumbbell Row", sets: "3 sets of 8-10 reps per side", note: "Increase the weight from Phase 1. Focus on a deep stretch at the bottom and a hard squeeze at the top." },
-                            { name: "Shrugs (Dumbbell or Barbell)", sets: "3 sets of 10-12 reps", note: "Focus on pulling your shoulders straight up to your ears. Pause at the top." }
+                            { name: "Weighted Inverted Rows", sets: "4 sets of 8-12 reps", note: "Place a weight plate on your chest or wear a backpack. Aim for progressive overload from Phase 1." },
+                            { name: "DB 'Barbell' Rows", sets: "4 sets of 8-12 reps", note: "Since you don't have a barbell, use two DBs and mimic the movement. Heavier than phase 1." },
+                            { name: "DB Preacher Curls", sets: "3 sets of 10-12 reps/side", note: "Brace your arm against an incline bench or even your leg. This isolates the bicep." },
+                            { name: "Face Pulls", sets: "4 sets of 15-20 reps", note: "Use a resistance band. Pull towards your face while externally rotating shoulders. Great for shoulder health." },
+                            { name: "DB Shrugs", sets: "3 sets of 12-15 reps", note: "Hold DBs at your side. Elevate shoulders straight up. Pause for 2 seconds at the top." }
                         ],
-                        finisher: [{ name: "Bicep Curl 21s", sets: "2 sets", note: "7 reps from bottom to halfway, 7 reps from halfway to top, 7 full reps. This is one set." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Same as Phase 1."}]
                     }},
-                    { day: "Tue", focus: "Push (Strength)", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                    { day: "Tue", focus: "LOWER", sections: {
+                        warmup: [{ name: "Modified Warm-up", sets: "5-10 mins", note: "Standard warm-up plus 1-2 light sets of your first exercise."}],
                         workout: [
-                            { name: "Dumbbell Bench Press", sets: "4 sets of 6-8 reps", note: "Go heavier than Phase 1. Control the negative and be explosive on the press." },
-                            { name: "Standing Overhead Press (Barbell or DB)", sets: "4 sets of 5-8 reps", note: "This is a primary strength builder. Keep core tight. Don't use leg drive." },
-                            { name: "Incline Dumbbell Press", sets: "3 sets of 8-10 reps", note: "Focus on the upper chest. Don't let your shoulders take over." },
-                            { name: "Triceps Dips (or Close Grip Push-ups)", sets: "3 sets to failure", note: "Use a bench or chair for dips. Go as deep as your shoulders comfortably allow." },
-                            { name: "Lateral Raises", sets: "4 sets of 10-15 reps", note: "Continue to focus on perfect form. Increase weight slightly if possible." }
+                            { name: "DB Bulgarian Split Squats", sets: "4 sets of 8-12 reps/leg", note: "Place your back foot on a bench. Go deep. This is a quad and glute destroyer." },
+                            { name: "DB Romanian Deadlifts", sets: "4 sets of 10-12 reps", note: "Focus on pushing the hips back and feeling the hamstring stretch. Go heavier than Phase 1." },
+                            { name: "DB Goblet Squats (Pause Reps)", sets: "3 sets of 10-12 reps", note: "Pause for 2-3 seconds at the bottom of each squat. This increases time under tension." },
+                            { name: "DB Hip Thrust", sets: "4 sets of 12-15 reps", note: "Place your upper back on a bench, feet on the floor. Hold a DB on your hips. Drive hips up and squeeze glutes hard." },
+                            { name: "DB 'Leg Press' Calf Raises", sets: "4 sets of 15-20 reps", note: "Mimic a leg press calf raise by sitting on a bench, placing DBs on your knees, and raising your heels." }
                         ],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Same as Phase 1."}]
                     }},
-                    { day: "Wed", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Mobility & Flexibility", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling." }] }},
-                    { day: "Thu", focus: "Lower Body (Strength)", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1, but add 1-2 light warm-up sets of the first exercise."}],
+                    { day: "Wed", focus: "REST", sections: { workout: [{ name: "Active Recovery", sets: "20-30 minutes", note: "Light activity like walking, stretching, or foam rolling." }] }},
+                    { day: "Thu", focus: "PUSH", sections: {
+                        warmup: [{ name: "Modified Warm-up", sets: "5-10 mins", note: "Standard warm-up plus 1-2 light sets of your first exercise."}],
                         workout: [
-                            { name: "Barbell Back Squats", sets: "4 sets of 5-8 reps", note: "If you have access to a barbell, this is your primary movement. Focus on depth and form." },
-                            { name: "Romanian Deadlifts (RDLs)", sets: "4 sets of 6-8 reps", note: "Go heavy. Focus on the hamstring stretch and glute contraction." },
-                            { name: "Bulgarian Split Squats", sets: "3 sets of 8-10 reps per leg", note: "This is for hypertrophy. Control the movement and focus on the working leg." },
-                            { name: "Leg Press Calf Raises", sets: "4 sets of 10-15 reps", note: "If no leg press, use dumbbells and stand on a plate/step for a deeper stretch." }
+                            { name: "DB Bench Press", sets: "4 sets of 8-12 reps", note: "If you have a bench. If not, continue with DB Floor Press, but focus on increasing the weight." },
+                            { name: "DB Seated Overhead Press", sets: "4 sets of 8-12 reps", note: "Sitting helps isolate the shoulders. Control the negative." },
+                            { name: "Decline Push-ups", sets: "3 sets of AMRAP", note: "Elevate your feet on a bench or chair to target the upper chest." },
+                            { name: "DB Lateral Raise (Dropset)", sets: "3 sets", note: "Perform 10-12 reps, immediately grab a lighter weight and do AMRAP. That's one set." },
+                            { name: "Diamond Push-ups", sets: "3 sets of AMRAP", note: "Hands close together to form a diamond shape. This targets the triceps heavily." }
                         ],
-                        finisher: [{ name: "Walking Lunges", sets: "2 sets of 20 reps per leg", note: "Use bodyweight or light dumbbells. Focus on endurance." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Same as Phase 1."}]
                     }},
-                    { day: "Fri", focus: "Upper Body (Hypertrophy)", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Same as Phase 1."}],
+                    { day: "Fri", focus: "UPPER", sections: {
+                        warmup: [{ name: "Modified Warm-up", sets: "5-10 mins", note: "Standard warm-up."}],
                         workout: [
-                            { name: "Pull-ups", sets: "4 sets of 8-12 reps", note: "Focus on volume. Use assistance (bands) or a lat pulldown machine if needed to hit the rep range." },
-                            { name: "Seated Cable Rows", sets: "4 sets of 10-12 reps", note: "Focus on the squeeze. Use a variety of handles if available." },
-                            { name: "Incline Dumbbell Press", sets: "4 sets of 10-12 reps", note: "Focus on the upper chest contraction. Moderate weight." },
-                            { name: "Seated Dumbbell Shoulder Press", sets: "3 sets of 10-12 reps", note: "Less focus on pure strength, more on the mind-muscle connection and pump." },
-                            { name: "Lateral Raises", sets: "3 sets of 15-20 reps", note: "High reps for metabolic stress. Use lighter weight." }
+                            { name: "Pull-ups (Negatives)", sets: "4 sets of 5-8 reps", note: "Jump to the top position of a pull-up and lower yourself as slowly as possible (aim for 3-5 seconds)." },
+                            { name: "DB Incline Press", sets: "4 sets of 10-12 reps", note: "Use an incline bench if available. Great for upper chest development." },
+                            { name: "DB Seated Lateral Raise", sets: "4 sets of 12-15 reps", note: "Sitting down prevents cheating. Focus on the mind-muscle connection with your side delts." },
+                            { name: "DB Hammer Curls", sets: "3 sets of 10-12 reps", note: "Neutral grip (palms facing each other). This hits the brachialis muscle, adding thickness to the arm." },
+                            { name: "DB Triceps Kickbacks", sets: "3 sets of 12-15 reps", note: "Hinge at the hips with a flat back. Keep your upper arm parallel to the floor and extend your forearm back." }
                         ],
-                        finisher: [{ name: "Bicep/Tricep Superset", sets: "3 sets of 10-15 reps each", note: "e.g., Dumbbell Curls immediately followed by Overhead Tricep Extensions." }],
-                        cooldown: [{ name: "Static Stretching", sets: "5-10 mins", note: "Same as Phase 1." }]
+                        cooldown: [{ name: "Standard Cooldown", sets: "5 mins", note: "Full upper body static stretching."}]
                     }},
-                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
-                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                    { day: "Sat", focus: "REST", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great. Listen to your body." }] }},
+                    { day: "Sun", focus: "COMPLETE REST", sections: { workout: [{ name: "Total Recovery", sets: "Full day", note: "Focus on nutrition, hydration, and sleep. This is when you grow." }] }}
                 ]
             },
-            phase3: {
-                weeks: 4, name: "Metabolic Finisher & Definition",
+            phase3: { // Weeks 17-20
+                weeks: 4, name: "Metabolic Cut & Definition",
                 days: [
-                     { day: "Mon", focus: "Full Body A", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                    { day: "Mon", focus: "FULL BODY A", sections: {
+                        warmup: [{ name: "Full Body Dynamic Warm-up", sets: "5-10 mins", note: "Jumping jacks, high knees, butt kicks, arm circles, leg swings, bodyweight squats and lunges."}],
                         workout: [
-                            { name: "Goblet Squat", sets: "5 sets of 10", note: "Explosive on the way up, controlled on the way down." },
-                            { name: "Pull-ups / Chin-ups", sets: "5 sets of AMRAP", note: "AMRAP = As Many Reps As Possible. Rest 60-90s between sets." },
-                            { name: "Dumbbell Bench Press", sets: "4 sets of 10-12", note: "Focus on controlled reps and feeling the chest work." },
-                            { name: "Lateral Raises", sets: "4 sets of 12-15", note: "Keep tension on the side delts." },
-                            { name: "Plank", sets: "3 sets to failure", note: "Hold a perfect plank for as long as possible." }
-                        ]
+                            { name: "DB Goblet Squat", sets: "5 sets of 15-20 reps", note: "Higher reps to increase metabolic stress. Keep rest times short (45-60s)." },
+                            { name: "Push-ups", sets: "5 sets of AMRAP", note: "Focus on maximum volume. Rest 60s between sets." },
+                            { name: "Inverted Rows", sets: "5 sets of AMRAP", note: "Match the volume of your push-ups. Rest 60s." },
+                            { name: "DB Overhead Press", sets: "4 sets of 12-15 reps", note: "Lighter weight, higher reps. Focus on the pump." },
+                            { name: "DB Renegade Rows", sets: "3 sets of 10-12 reps/side", note: "In a push-up position with hands on DBs, row one DB up at a time. Keep your core tight and hips stable." },
+                            { name: "Burpees", sets: "3 sets of AMRAP in 60s", note: "This is your cardio finisher. Go all out for 60 seconds, rest 60 seconds. Repeat." }
+                        ],
+                        cooldown: [{ name: "Full Body Cooldown", sets: "5 mins", note: "Light stretching for all major muscle groups."}]
                     }},
-                    { day: "Tue", focus: "Full Body B", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                    { day: "Tue", focus: "REST", sections: { workout: [{ name: "Active Recovery", sets: "20-30 minutes", note: "A brisk walk is perfect. The goal is to aid recovery, not add stress." }] }},
+                    { day: "Wed", focus: "FULL BODY B", sections: {
+                        warmup: [{ name: "Full Body Dynamic Warm-up", sets: "5-10 mins", note: "Same as Monday."}],
                         workout: [
-                            { name: "Romanian Deadlifts", sets: "5 sets of 10", note: "Focus on the hamstring stretch and glute squeeze." },
-                            { name: "Inverted Rows", sets: "5 sets of AMRAP", note: "Adjust foot position to make it challenging." },
-                            { name: "Push-ups", sets: "4 sets of AMRAP", note: "Go for maximum reps with perfect form." },
-                            { name: "Face Pulls", sets: "4 sets of 15-20", note: "High reps for shoulder health and posture." },
-                            { name: "Hanging Knee Raises", sets: "3 sets to failure", note: "Control the movement; don't swing." }
-                        ]
+                            { name: "DB Romanian Deadlifts", sets: "5 sets of 15-20 reps", note: "Focus on the stretch and squeeze. Keep the weight moderate to maintain form with high reps." },
+                            { name: "DB Incline Press", sets: "5 sets of 12-15 reps", note: "If no incline bench, use the floor press. Short rest periods." },
+                            { name: "Pull-up Negatives", sets: "5 sets of AMRAP", note: "Control the descent for as long as possible. This is about time under tension." },
+                            { name: "DB Lateral Raises", sets: "4 sets of 15-20 reps", note: "High reps to carve out shoulder definition. Feel the burn." },
+                            { name: "DB Farmer's Walk", sets: "3 sets of 60s", note: "Go as heavy as you can for the full minute. This builds overall grit and burns calories." },
+                            { name: "Mountain Climbers", sets: "3 sets of AMRAP in 60s", note: "Cardio finisher. Keep your core tight and hips low." }
+                        ],
+                        cooldown: [{ name: "Full Body Cooldown", sets: "5 mins", note: "Light stretching for all major muscle groups."}]
                     }},
-                    { day: "Wed", focus: "Active Recovery / HIIT", sections: { workout: [{ name: "HIIT or Mobility", sets: "15-20 minutes", note: "Choose one: High-Intensity Interval Training (e.g., sprints, burpees) OR a full mobility session." }] }},
-                    { day: "Thu", focus: "Full Body A", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
+                    { day: "Thu", focus: "REST", sections: { workout: [{ name: "Active Recovery", sets: "20-30 minutes", note: "Foam roll any sore muscles." }] }},
+                    { day: "Fri", focus: "FULL BODY C (Circuit)", sections: {
+                        warmup: [{ name: "Full Body Dynamic Warm-up", sets: "5-10 mins", note: "Same as Monday."}],
                         workout: [
-                            { name: "Goblet Squat", sets: "5 sets of 10", note: "Try to increase weight or reps from Monday." },
-                            { name: "Pull-ups / Chin-ups", sets: "5 sets of AMRAP", note: "Try to beat your previous AMRAP numbers." },
-                            { name: "Dumbbell Bench Press", sets: "4 sets of 10-12", note: "Maintain good form." },
-                            { name: "Lateral Raises", sets: "4 sets of 12-15", note: "Focus on the 'burn'." },
-                            { name: "Plank", sets: "3 sets to failure", note: "Try to hold longer than last time." }
-                        ]
+                            { name: "DB Thrusters", sets: "4 rounds of 15 reps", note: "Perform all exercises in the circuit back-to-back with no rest. A thruster is a squat into an overhead press." },
+                            { name: "DB Bent-Over Rows", sets: "4 rounds of 15 reps", note: "Move directly from thrusters to rows." },
+                            { name: "Pike Push-ups", sets: "4 rounds of AMRAP", note: "Move directly from rows to pike push-ups." },
+                            { name: "Plank", sets: "4 rounds of 60s hold", note: "Hold a solid plank for one minute." },
+                            { name: "Jumping Jacks", sets: "4 rounds of 60s", note: "Final exercise in the circuit. After this, rest for 60-90s and repeat the entire circuit." }
+                        ],
+                        cooldown: [{ name: "Full Body Cooldown", sets: "5 mins", note: "Your heart rate will be high. Cool down properly."}]
                     }},
-                    { day: "Fri", focus: "Full Body B", sections: {
-                        warmup: [{ name: "Dynamic Prep", sets: "8-12 mins", note: "Full body dynamic warm-up."}],
-                        workout: [
-                            { name: "Romanian Deadlifts", sets: "5 sets of 10", note: "Focus on that mind-muscle connection." },
-                            { name: "Inverted Rows", sets: "5 sets of AMRAP", note: "Challenge yourself." },
-                            { name: "Push-ups", sets: "4 sets of AMRAP", note: "Beat your last performance." },
-                            { name: "Face Pulls", sets: "4 sets of 15-20", note: "Perfect form." },
-                            { name: "Hanging Knee Raises", sets: "3 sets to failure", note: "Squeeze your abs." }
-                        ]
-                    }},
-                    { day: "Sat", focus: "Active Recovery / Rest", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great." }] }},
-                    { day: "Sun", focus: "Rest", sections: { workout: [{ name: "Complete Rest", sets: "Full recovery day", note: "Focus on nutrition, hydration, and sleep." }] }}
+                    { day: "Sat", focus: "REST", sections: { workout: [{ name: "Light Activity", sets: "As desired", note: "A walk, hike, or light cardio is great. Listen to your body." }] }},
+                    { day: "Sun", focus: "COMPLETE REST", sections: { workout: [{ name: "Total Recovery", sets: "Full day", note: "This is your final rest day of the week. Eat well and sleep." }] }}
                 ]
             }
         };
@@ -352,7 +371,7 @@
                     const isDone = state.completed[exId];
                     const card = document.createElement('div');
                     card.className = `exercise-card flex items-center p-4 rounded-xl shadow-md ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''}`;
-                    card.innerHTML = `<div class="flex-1 mr-2"><h5 class="exercise-name font-bold text-md md:text-lg text-[var(--text-primary)]">${ex.name}</h5><p class="text-sm text-[var(--text-secondary)]">${ex.sets}</p></div><div class="flex items-center space-x-2 md:space-x-3"><button class="note-btn p-1" data-note="${ex.note.replace(/"/g, '&quot;')}" data-name="${ex.name}"><svg class="w-6 h-6 stroke-current text-gray-500 hover:text-[var(--primary)] transition" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>${!isRest ? `<input type="checkbox" data-id="${exId}" class="custom-checkbox" ${isDone ? 'checked' : ''}>` : ''}</div>`;
+                    card.innerHTML = `<div class="flex-1 mr-2"><h5 class="exercise-name font-semibold text-md md:text-lg text-[var(--text-primary)]">${ex.name}</h5><p class="text-sm text-[var(--text-secondary)]">${ex.sets}</p></div><div class="flex items-center space-x-2 md:space-x-3"><button class="note-btn p-1" data-note="${ex.note.replace(/"/g, '&quot;')}" data-name="${ex.name}"><svg class="w-6 h-6 stroke-current text-gray-500 hover:text-[var(--primary)] transition" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>${!isRest ? `<input type="checkbox" data-id="${exId}" class="custom-checkbox" ${isDone ? 'checked' : ''}>` : ''}</div>`;
                     E.workoutCont.appendChild(card);
                     setTimeout(() => card.classList.add('visible'), (E.workoutCont.children.length) * 40);
                 });
@@ -380,7 +399,8 @@
                 for (const section in dayData.sections) {
                     dayData.sections[section].forEach((ex, i) => {
                         totalForDay++;
-                        if (state.completed[`w${state.week}d${dayIndex}${section}${i}`]) completedForDay++;
+                        const exId = `w${state.week}d${dayIndex}${section}${i}`;
+                        if (state.completed[exId]) completedForDay++;
                     });
                 }
                 tab.classList.toggle('day-complete', totalForDay > 0 && completedForDay === totalForDay);
@@ -391,7 +411,7 @@
             const phase = getPhaseFromWeek(state.week);
             E.wkTitle.textContent = `Week ${state.week}`;
             E.phFocus.textContent = phase.data.name;
-            E.progTitle.textContent = `${phase.key.replace('p','P')} Progress`
+            E.progTitle.textContent = `Total Progress`;
             E.dayTabs.forEach(t => t.classList.toggle('active', parseInt(t.dataset.day) === state.day));
             E.prevWkBtn.disabled = state.week === 1;
             E.nextWkBtn.disabled = state.week === totalWeeks;
@@ -405,7 +425,10 @@
         }
 
         function loadProgress() {
-            try { state.completed = JSON.parse(localStorage.getItem('recompIgniteProgress')) || {}; }
+            try { 
+                const saved = localStorage.getItem('recompIgniteProgress');
+                state.completed = saved ? JSON.parse(saved) : {};
+             }
             catch (e) { state.completed = {}; }
         }
 
@@ -415,7 +438,11 @@
                 const phase = getPhaseFromWeek(week);
                 phase.data.days.forEach(day => {
                     if (day.focus.toLowerCase().includes('rest')) return;
-                    for (const section in day.sections) state.totalExercises += day.sections[section].length;
+                    for (const section in day.sections) {
+                        if (section !== 'warmup' && section !== 'cooldown') {
+                           state.totalExercises += day.sections[section].length;
+                        }
+                    }
                 });
             }
         }
@@ -450,4 +477,3 @@
     </script>
 </body>
 </html>
-
